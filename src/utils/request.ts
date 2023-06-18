@@ -5,7 +5,7 @@ import qs from 'qs';
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
-	baseURL: import.meta.env.VITE_API_URL,
+	// baseURL: import.meta.env.VITE_API_URL,
 	timeout: 50000,
 	headers: { 'Content-Type': 'application/json' },
 	paramsSerializer: {
@@ -14,7 +14,11 @@ const service: AxiosInstance = axios.create({
 		},
 	},
 });
-
+const adornUrl = (actionName: string): string => {
+	// 非生产环境 && 开启代理, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
+	return 'api/' + actionName;
+};
+service.adornUrl = adornUrl;
 // 添加请求拦截器
 service.interceptors.request.use(
 	(config) => {

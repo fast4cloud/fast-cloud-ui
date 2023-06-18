@@ -23,16 +23,16 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
 		base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
 		optimizeDeps: { exclude: ['vue-demi'] },
 		server: {
-			host: '0.0.0.0',
+			/*host: '0.0.0.0',*/
 			port: env.VITE_PORT as unknown as number,
 			open: JSON.parse(env.VITE_OPEN),
-			hmr: true,
+			/*hmr: true,*/
 			proxy: {
-				'/gitee': {
-					target: 'https://gitee.com',
+				'/api': {
+					target: 'http://127.0.0.1:8099/fast-gateway/',
 					ws: true,
 					changeOrigin: true,
-					rewrite: (path) => path.replace(/^\/gitee/, ''),
+					rewrite: (path) => path.replace(/^\/api/, ''),
 				},
 			},
 		},
