@@ -1,8 +1,10 @@
 import axios, { AxiosInstance } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Session } from '/@/utils/storage';
+import Cookies from "js-cookie";
 import qs from 'qs';
-
+import requestUtil from '/@/utils/requestUtil'
+import uuid from '/@/utils/uuid'
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
 	// baseURL: import.meta.env.VITE_API_URL,
@@ -23,9 +25,21 @@ service.adornUrl = adornUrl;
 service.interceptors.request.use(
 	(config) => {
 		// 在发送请求之前做些什么 token
+		config.headers['token'] =Cookies.get('token')
+		config.headers['appId'] = Cookies.get('token')
 		if (Session.get('token')) {
 			config.headers!['Authorization'] = `${Session.get('token')}`;
 		}
+		const data = config.data
+		// const baseURL = config.baseURL
+		const url = config.url
+		const rkey = uuid.UUID(16)
+		config.rkey = rkey
+		if (config.headers['Content-Type'] === 'multipart/form-data') {
+			// 文件上传时,不重写data值
+			return config
+		}
+		config.data = requestUtil.initReqParam(data, rkey, url)
 		return config;
 	},
 	(error) => {
@@ -39,7 +53,7 @@ service.interceptors.response.use(
 	(response) => {
 		// 对响应数据做点什么
 		const res = response.data;
-		if (res.code && res.code !== 0) {
+		if (res.code === '401') {
 			// `token` 过期或者账号已在别处登录
 			if (res.code === 401 || res.code === 4001) {
 				Session.clear(); // 清除浏览器全部临时缓存
@@ -49,8 +63,16 @@ service.interceptors.response.use(
 					.catch(() => {});
 			}
 			return Promise.reject(service.interceptors.response);
-		} else {
-			return res;
+		}else if (res.code !== '200') {
+			ElMessage({
+				message: res.message || 'Error',
+				type: 'error',
+				duration: 5 * 1000
+			})
+			return Promise.reject(new Error(res.message || 'Error'))
+		}
+		else {
+			return requestUtil.decryptData(res.data, response.config.rkey)
 		}
 	},
 	(error) => {
