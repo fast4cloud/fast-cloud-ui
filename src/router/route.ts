@@ -46,7 +46,8 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 		meta: {
 			isKeepAlive: true,
 		},
-		children: [
+		children:[],
+	/*	children: [
 			{
 				path: '/home',
 				name: 'home',
@@ -580,12 +581,12 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 							roles: ['admin', 'common'],
 							icon: 'ele-Sell',
 						},
-						/**
+						/!**
 						 * 注意此处详情写法：
 						 * 1、嵌套进父级里时，面包屑显示为：首页/页面/过滤筛选组件/过滤筛选组件详情
 						 * 2、不嵌套进父级时，面包屑显示为：首页/页面/过滤筛选组件/过滤筛选组件详情
 						 * 3、想要父级不高亮，面包屑显示为：首页/页面/过滤筛选组件详情，设置路径为：/pages/filteringDetails
-						 */
+						 *!/
 						children: [
 							{
 								path: '/pages/filtering/details',
@@ -1015,10 +1016,10 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 							icon: 'iconfont icon-dongtai',
 						},
 					},
-					/**
+					/!**
 					 * tagsViewName 为要设置不同的 "tagsView 名称" 字段
 					 * 如若需设置不同 "tagsView 名称"，tagsViewName 字段必须要有
-					 */
+					 *!/
 					{
 						path: '/params/dynamic/details/:t/:id/:tagsViewName',
 						name: 'paramsDynamicDetails',
@@ -1051,11 +1052,11 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					roles: ['admin'],
 					icon: 'ele-ChatLineRound',
 				},
-				/**
+				/!**
 				 * 打开内置全屏
 				 * component 都为 `() => import('/@/layout/routerView/link.vue')`
 				 * isLink 链接为内置的路由地址，地址为 staticRoutes 中定义
-				 */
+				 *!/
 				children: [
 					{
 						path: '/visualizing/visualizingLinkDemo1',
@@ -1179,7 +1180,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					icon: 'iconfont icon-neiqianshujuchucun',
 				},
 			},
-		],
+		],*/
 	},
 ];
 

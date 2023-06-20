@@ -1,13 +1,15 @@
-import { RouteRecordRaw } from 'vue-router';
-import { storeToRefs } from 'pinia';
-import { formatTwoStageRoutes, formatFlatteningRoutes, router } from '/@/router/index';
-import { dynamicRoutes, notFoundAndNoPower } from '/@/router/route';
+import {RouteRecordRaw} from 'vue-router';
+import {storeToRefs} from 'pinia';
+import {formatTwoStageRoutes, formatFlatteningRoutes, router} from '/@/router/index';
+import {dynamicRoutes, notFoundAndNoPower} from '/@/router/route';
 import pinia from '/@/stores/index';
-import { Session } from '/@/utils/storage';
-import { useUserInfo } from '/@/stores/userInfo';
-import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
-import { useRoutesList } from '/@/stores/routesList';
-import { NextLoading } from '/@/utils/loading';
+import {Session} from '/@/utils/storage';
+import {useUserInfo} from '/@/stores/userInfo';
+import {useTagsViewRoutes} from '/@/stores/tagsViewRoutes';
+import {useRoutesList} from '/@/stores/routesList';
+import {NextLoading} from '/@/utils/loading';
+import {useMenuApi} from '/@/api/menu/index';
+import Layout from '/@/layout'
 
 // 前端控制路由
 
@@ -19,20 +21,20 @@ import { NextLoading } from '/@/utils/loading';
  * @method setFilterMenuAndCacheTagsViewRoutes 设置递归过滤有权限的路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
  */
 export async function initFrontEndControlRoutes() {
-	// 界面 loading 动画开始执行
-	if (window.nextLoading === undefined) NextLoading.start();
-	// 无 token 停止执行下一步
-	if (!Session.get('token')) return false;
-	// 触发初始化用户信息 pinia
-	// https://gitee.com/lyt-top/ fast-cloud-ui/issues/I5F1HP
-	await useUserInfo(pinia).setUserInfos();
-	// 无登录权限时，添加判断
-	// https://gitee.com/lyt-top/ fast-cloud-ui/issues/I64HVO
-	if (useUserInfo().userInfos.roles.length <= 0) return Promise.resolve(true);
-	// 添加动态路由
-	await setAddRoute();
-	// 设置递归过滤有权限的路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
-	setFilterMenuAndCacheTagsViewRoutes();
+    // 界面 loading 动画开始执行
+    if (window.nextLoading === undefined) NextLoading.start();
+    // 无 token 停止执行下一步
+    if (!Session.get('token')) return false;
+    // 触发初始化用户信息 pinia
+    // https://gitee.com/lyt-top/ fast-cloud-ui/issues/I5F1HP
+    await useUserInfo(pinia).setUserInfos();
+    // 无登录权限时，添加判断
+    // https://gitee.com/lyt-top/ fast-cloud-ui/issues/I64HVO
+    if (useUserInfo().userInfos.roles.length <= 0) return Promise.resolve(true);
+    // 添加动态路由
+    await setAddRoute();
+    // 设置递归过滤有权限的路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
+    setFilterMenuAndCacheTagsViewRoutes();
 }
 
 /**
@@ -42,9 +44,12 @@ export async function initFrontEndControlRoutes() {
  * @link 参考：https://next.router.vuejs.org/zh/api/#addroute
  */
 export async function setAddRoute() {
-	await setFilterRouteEnd().forEach((route: RouteRecordRaw) => {
-		router.addRoute(route);
-	});
+    let list = await setFilterRouteEnd();
+    await list.forEach((route: RouteRecordRaw) => {
+        //console.log(JSON.stringify(route))
+        debugger
+        router.addRoute(route);
+    });
 }
 
 /**
@@ -54,10 +59,10 @@ export async function setAddRoute() {
  * @link 参考：https://next.router.vuejs.org/zh/api/#push
  */
 export async function frontEndsResetRoute() {
-	await setFilterRouteEnd().forEach((route: RouteRecordRaw) => {
-		const routeName: any = route.name;
-		router.hasRoute(routeName) && router.removeRoute(routeName);
-	});
+    await setFilterRouteEnd().forEach((route: RouteRecordRaw) => {
+        const routeName: any = route.name;
+        router.hasRoute(routeName) && router.removeRoute(routeName);
+    });
 }
 
 /**
@@ -65,12 +70,74 @@ export async function frontEndsResetRoute() {
  * @description 替换 dynamicRoutes（/@/router/route）第一个顶级 children 的路由
  * @returns 返回替换后的路由数组
  */
-export function setFilterRouteEnd() {
-	let filterRouteEnd: any = formatTwoStageRoutes(formatFlatteningRoutes(dynamicRoutes));
-	// notFoundAndNoPower 防止 404、401 不在 layout 布局中，不设置的话，404、401 界面将全屏显示
-	// 关联问题 No match found for location with path 'xxx'
-	filterRouteEnd[0].children = [...setFilterRoute(filterRouteEnd[0].children), ...notFoundAndNoPower];
-	return filterRouteEnd;
+export async function setFilterRouteEnd() {
+    const menuApi = await useMenuApi();
+    await menuApi.getMenu().then(value => {
+        let list = [];
+        treeMenu(value.children, list);
+        list = [...list, ...notFoundAndNoPower];
+       dynamicRoutes[0].children=list
+    });
+
+    //let filterRouteEnd: any = formatTwoStageRoutes(formatFlatteningRoutes(dynamicRoutes));
+    //filterRouteEnd[0].children = [...filterRouteEnd[0].children, ...notFoundAndNoPower];
+    //console.log(JSON.stringify(filterRouteEnd))
+    // notFoundAndNoPower 防止 404、401 不在 layout 布局中，不设置的话，404、401 界面将全屏显示
+    // 关联问题 No match found for location with path 'xxx'
+
+    //return await filterRouteEnd;
+    console.log(JSON.stringify(dynamicRoutes))
+    return await dynamicRoutes;
+}
+
+export async function treeMenu(menuList: any, list: any) {
+    for (var i = 0; i < menuList.length; i++) {
+        let menu = menuList[i];
+        if (menu.menuType === '0') {
+            let json = {
+                //说明是目录
+                path: `/${menu.path}`,
+                name: menu.path,
+                component: () => import('/@/layout/routerView/parent.vue'),
+                "redirect": "/system/menu",
+                meta: {
+                    title: menu.menuName,
+                    //isLink: "",
+                    isHide: menu.visible == '0' ? false : true,
+                    isKeepAlive: true,
+                    isAffix: false,
+                    isIframe: false,
+                    icon: menu.icon,
+
+                }
+            }
+            list.push(json)
+        } else {
+            // debugger
+            let json = {
+                //说明是目录
+                path: `/${menu.path}`,
+                name: menu.path,
+                component: () => import('/@/views/' + menu.component),
+                meta: {
+                    title: menu.menuName,
+                    //isLink: "",
+                    isHide: menu.visible == '0' ? false : true,
+                    isKeepAlive: true,
+                    isAffix: false,
+                    isIframe: false,
+                    icon: menu.icon,
+
+                }
+            }
+            list.push(json)
+        }
+        if (menu.children && menu.children.length > 0) {
+            list[i].children = []
+            treeMenu(menuList[i].children, list[i].children)
+        }
+    }
+
 }
 
 /**
@@ -81,19 +148,19 @@ export function setFilterRouteEnd() {
  * @returns 返回有当前用户权限标识的路由数组
  */
 export function setFilterRoute(chil: any) {
-	const stores = useUserInfo(pinia);
-	const { userInfos } = storeToRefs(stores);
-	let filterRoute: any = [];
-	chil.forEach((route: any) => {
-		if (route.meta.roles) {
-			route.meta.roles.forEach((metaRoles: any) => {
-				userInfos.value.roles.forEach((roles: any) => {
-					if (metaRoles === roles) filterRoute.push({ ...route });
-				});
-			});
-		}
-	});
-	return filterRoute;
+    const stores = useUserInfo(pinia);
+    const {userInfos} = storeToRefs(stores);
+    let filterRoute: any = [];
+    chil.forEach((route: any) => {
+        if (route.meta.roles) {
+            route.meta.roles.forEach((metaRoles: any) => {
+                userInfos.value.roles.forEach((roles: any) => {
+                    if (metaRoles === roles) filterRoute.push({...route});
+                });
+            });
+        }
+    });
+    return filterRoute;
 }
 
 /**
@@ -101,13 +168,13 @@ export function setFilterRoute(chil: any) {
  * @description 用于 tagsView、菜单搜索中：未过滤隐藏的(isHide)
  */
 export function setCacheTagsViewRoutes() {
-	// 获取有权限的路由，否则 tagsView、菜单搜索中无权限的路由也将显示
-	const stores = useUserInfo(pinia);
-	const storesTagsView = useTagsViewRoutes(pinia);
-	const { userInfos } = storeToRefs(stores);
-	let rolesRoutes = setFilterHasRolesMenu(dynamicRoutes, userInfos.value.roles);
-	// 添加到 pinia setTagsViewRoutes 中
-	storesTagsView.setTagsViewRoutes(formatTwoStageRoutes(formatFlatteningRoutes(rolesRoutes))[0].children);
+    // 获取有权限的路由，否则 tagsView、菜单搜索中无权限的路由也将显示
+    const stores = useUserInfo(pinia);
+    const storesTagsView = useTagsViewRoutes(pinia);
+    const {userInfos} = storeToRefs(stores);
+    let rolesRoutes = setFilterHasRolesMenu(dynamicRoutes, userInfos.value.roles);
+    // 添加到 pinia setTagsViewRoutes 中
+    storesTagsView.setTagsViewRoutes(formatTwoStageRoutes(formatFlatteningRoutes(rolesRoutes))[0].children);
 }
 
 /**
@@ -116,11 +183,11 @@ export function setCacheTagsViewRoutes() {
  * @description 用于 tagsView、菜单搜索中：未过滤隐藏的(isHide)
  */
 export function setFilterMenuAndCacheTagsViewRoutes() {
-	const stores = useUserInfo(pinia);
-	const storesRoutesList = useRoutesList(pinia);
-	const { userInfos } = storeToRefs(stores);
-	storesRoutesList.setRoutesList(setFilterHasRolesMenu(dynamicRoutes[0].children, userInfos.value.roles));
-	setCacheTagsViewRoutes();
+    const stores = useUserInfo(pinia);
+    const storesRoutesList = useRoutesList(pinia);
+    const {userInfos} = storeToRefs(stores);
+    storesRoutesList.setRoutesList(setFilterHasRolesMenu(dynamicRoutes[0].children, userInfos.value.roles));
+    setCacheTagsViewRoutes();
 }
 
 /**
@@ -130,8 +197,8 @@ export function setFilterMenuAndCacheTagsViewRoutes() {
  * @returns 返回对比后有权限的路由项
  */
 export function hasRoles(roles: any, route: any) {
-	if (route.meta && route.meta.roles) return roles.some((role: any) => route.meta.roles.includes(role));
-	else return true;
+    if (route.meta && route.meta.roles) return roles.some((role: any) => route.meta.roles.includes(role));
+    else return true;
 }
 
 /**
@@ -141,13 +208,13 @@ export function hasRoles(roles: any, route: any) {
  * @returns 返回有权限的路由数组 `meta.roles` 中控制
  */
 export function setFilterHasRolesMenu(routes: any, roles: any) {
-	const menu: any = [];
-	routes.forEach((route: any) => {
-		const item = { ...route };
-		if (hasRoles(roles, item)) {
-			if (item.children) item.children = setFilterHasRolesMenu(item.children, roles);
-			menu.push(item);
-		}
-	});
-	return menu;
+    const menu: any = [];
+    routes.forEach((route: any) => {
+        const item = {...route};
+        if (hasRoles(roles, item)) {
+            if (item.children) item.children = setFilterHasRolesMenu(item.children, roles);
+            menu.push(item);
+        }
+    });
+    return menu;
 }

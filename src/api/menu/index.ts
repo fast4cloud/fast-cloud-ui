@@ -12,6 +12,13 @@ import request from '/@/utils/request';
  */
 export function useMenuApi() {
 	return {
+		getMenu: (params?: object) => {
+			return request({
+				url: request.adornUrl("fast-admin/fastadmin/sysmenu/menuRouters"),
+				method: 'get',
+				params,
+			});
+		},
 		getAdminMenu: (params?: object) => {
 			return request({
 				url: '/gitee/lyt-top/ fast-cloud-ui-images/raw/master/menu/adminMenu.json',
