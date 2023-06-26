@@ -71,7 +71,7 @@ import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
-
+import { test } from '/@/api/test/index';
 // 定义变量内容
 const homeLineRef = ref();
 const homePieRef = ref();
@@ -503,7 +503,25 @@ const initEchartsResize = () => {
 };
 // 页面加载时
 onMounted(() => {
-	initEchartsResize();
+  const menuApi = test();
+  let json={
+    "appId": "",
+    "appName": "",
+    "accessRole": "",
+    "accessIp": "",
+    "publicKey": "",
+    "privateKey": "",
+    "hasTop": 0,
+    "createBy": "",
+    "updateB": ""
+  }
+  menuApi.testData(json).then(value => {
+
+    console.log("数据")
+
+    console.log(value)
+  });
+  initEchartsResize();
 });
 // 由于页面缓存原因，keep-alive
 onActivated(() => {

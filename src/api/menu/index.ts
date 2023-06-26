@@ -19,19 +19,33 @@ export function useMenuApi() {
 				params,
 			});
 		},
-		getAdminMenu: (params?: object) => {
+		save: (data: object) => {
 			return request({
-				url: '/gitee/lyt-top/ fast-cloud-ui-images/raw/master/menu/adminMenu.json',
-				method: 'get',
-				params,
+				url: request.adornUrl("fast-admin/fastadmin/sysmenu/save"),
+				method: 'post',
+				data,
 			});
 		},
-		getTestMenu: (params?: object) => {
+		delete: (data: object) => {
 			return request({
-				url: '/gitee/lyt-top/ fast-cloud-ui-images/raw/master/menu/testMenu.json',
-				method: 'get',
-				params,
+				url: request.adornUrl("fast-admin/fastadmin/sysmenu/delete"),
+				method: 'post',
+				data,
 			});
 		},
+		info: (data: object) => {
+			return request({
+				url: request.adornUrl("fast-admin/fastadmin/sysmenu/info"),
+				method: 'post',
+				data,
+			});
+		},
+		update: (data: object) => {
+			return request({
+				url: request.adornUrl("fast-admin/fastadmin/sysmenu/update"),
+				method: 'post',
+				data,
+			});
+		}
 	};
 }

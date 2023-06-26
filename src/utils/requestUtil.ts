@@ -25,12 +25,13 @@ const request = {
         param.data = encryption.encryptDesCbc(JSON.stringify(data), key)
         return param
     },
-    decryptData(data:object, key:string):object {
+    decryptData(data:object, key:string):string {
         try {
+            // debugger
             const decData = encryption.decryptDesCbc(data, key)
             return JSON.parse(decData)
         } catch (e) {
-            return data
+            return "";
         }
     },
 }

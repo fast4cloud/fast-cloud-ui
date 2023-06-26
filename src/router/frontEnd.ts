@@ -47,7 +47,7 @@ export async function setAddRoute() {
     let list = await setFilterRouteEnd();
     await list.forEach((route: RouteRecordRaw) => {
         //console.log(JSON.stringify(route))
-        debugger
+        //debugger
         router.addRoute(route);
     });
 }
@@ -98,6 +98,8 @@ export async function treeMenu(menuList: any, list: any) {
                 //说明是目录
                 path: `/${menu.path}`,
                 name: menu.path,
+                id:menu.id,
+                parentId:menu.parentId,
                 component: () => import('/@/layout/routerView/parent.vue'),
                 "redirect": "/system/menu",
                 meta: {
@@ -118,6 +120,8 @@ export async function treeMenu(menuList: any, list: any) {
                 //说明是目录
                 path: `/${menu.path}`,
                 name: menu.path,
+                id:menu.id,
+                parentId:menu.parentId,
                 component: () => import('/@/views/' + menu.component),
                 meta: {
                     title: menu.menuName,

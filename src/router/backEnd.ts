@@ -42,10 +42,10 @@ export async function initBackEndControlRoutes() {
 	// https://gitee.com/lyt-top/ fast-cloud-ui/issues/I5F1HP
 	await useUserInfo().setUserInfos();
 	// 获取路由菜单数据
-	const res = await getBackEndControlRoutes();
+	//const res = await getBackEndControlRoutes();
 	// 无登录权限时，添加判断
 	// https://gitee.com/lyt-top/ fast-cloud-ui/issues/I64HVO
-	if (res.data.length <= 0) return Promise.resolve(true);
+	//if (res.data.length <= 0) return Promise.resolve(true);
 	// 存储接口原始路由（未处理component），根据需求选择使用
 	useRequestOldRoutes().setRequestOldRoutes(JSON.parse(JSON.stringify(res.data)));
 	// 处理路由（component），替换 dynamicRoutes（/@/router/route）第一个顶级 children 的路由
@@ -106,7 +106,7 @@ export async function setAddRoute() {
  * @description isRequestRoutes 为 true，则开启后端控制路由
  * @returns 返回后端路由菜单数据
  */
-export function getBackEndControlRoutes() {
+/*export function getBackEndControlRoutes() {
 	// 模拟 admin 与 test
 	const stores = useUserInfo(pinia);
 	const { userInfos } = storeToRefs(stores);
@@ -115,16 +115,16 @@ export function getBackEndControlRoutes() {
 	if (auth === 'admin') return menuApi.getAdminMenu();
 	// 其它用户 test
 	else return menuApi.getTestMenu();
-}
+}*/
 
 /**
  * 重新请求后端路由菜单接口
  * @description 用于菜单管理界面刷新菜单（未进行测试）
  * @description 路径：/src/views/system/menu/component/addMenu.vue
  */
-export async function setBackEndControlRefreshRoutes() {
+/*export async function setBackEndControlRefreshRoutes() {
 	await getBackEndControlRoutes();
-}
+}*/
 
 /**
  * 后端路由 component 转换

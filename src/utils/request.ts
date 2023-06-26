@@ -54,7 +54,7 @@ service.interceptors.request.use(
 
 // 添加响应拦截器
 service.interceptors.response.use(
-    (response) => {
+    async (response) => {
         // 对响应数据做点什么
         const res = response.data;
         let method = response.config.method;
@@ -78,10 +78,14 @@ service.interceptors.response.use(
             })
             return Promise.reject(new Error(res.message || 'Error'))
         } else {
-            if(method!='post'){
+            if (method != 'post') {
                 return res.data;
             }
-            return requestUtil.decryptData(res.data, response.config.rkey)
+            let content = await requestUtil.decryptData(res.data, response.config.rkey);
+            if (content === null || content === '') {
+                return res;
+            }
+            return content
         }
     },
     (error) => {
