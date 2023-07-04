@@ -67,10 +67,8 @@
 import {defineAsyncComponent, ref, onMounted, reactive} from 'vue';
 import {RouteRecordRaw} from 'vue-router';
 import {ElMessageBox, ElMessage} from 'element-plus';
-// import {storeToRefs} from 'pinia';
-// import {useRoutesList} from '/@/stores/routesList';
+
 import {useMenuApi} from '/@/api/menu/index';
-// import { setBackEndControlRefreshRoutes } from "/@/router/backEnd";
 
 // 引入组件
 const MenuDialog = defineAsyncComponent(() => import('/@/views/system/menu/dialog.vue'));
@@ -91,7 +89,7 @@ const getTableData = async () => {
   state.tableData.loading = true;
   const menuApi = await useMenuApi();
   await menuApi.getMenu().then(value => {
-    state.tableData.data = value.children;
+    state.tableData.data = value.data.children;
   });
   setTimeout(() => {
     state.tableData.loading = false;

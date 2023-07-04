@@ -79,13 +79,11 @@ service.interceptors.response.use(
             return Promise.reject(new Error(res.message || 'Error'))
         } else {
             if (method != 'post') {
-                return res.data;
-            }
-            let content = await requestUtil.decryptData(res.data, response.config.rkey);
-            if (content === null || content === '') {
                 return res;
             }
-            return content
+            let content = await requestUtil.decryptData(res.data, response.config.rkey);
+            res.data=content;
+           return res;
         }
     },
     (error) => {

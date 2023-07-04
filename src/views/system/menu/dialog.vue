@@ -107,38 +107,6 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
-            <!--            <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-                          <el-form-item label="页面缓存">
-                            <el-radio-group v-model="state.ruleForm.meta.isKeepAlive">
-                              <el-radio :label="true">缓存</el-radio>
-                              <el-radio :label="false">不缓存</el-radio>
-                            </el-radio-group>
-                          </el-form-item>
-                        </el-col>-->
-            <!--            <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-                          <el-form-item label="是否固定">
-                            <el-radio-group v-model="state.ruleForm.meta.isAffix">
-                              <el-radio :label="true">固定</el-radio>
-                              <el-radio :label="false">不固定</el-radio>
-                            </el-radio-group>
-                          </el-form-item>
-                        </el-col>-->
-            <!--            <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-                          <el-form-item label="是否外链">
-                            <el-radio-group v-model="state.ruleForm.isFrame" >
-                              <el-radio :label="true">是</el-radio>
-                              <el-radio :label="false">否</el-radio>
-                            </el-radio-group>
-                          </el-form-item>
-                        </el-col>-->
-            <!--            <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-                          <el-form-item label="是否内嵌">
-                            <el-radio-group v-model="state.ruleForm.isFrame" @change="onSelectIframeChange">
-                              <el-radio :label="true">是</el-radio>
-                              <el-radio :label="false">否</el-radio>
-                            </el-radio-group>
-                          </el-form-item>
-                        </el-col>-->
           </template>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="备注">
@@ -159,11 +127,6 @@
 
 <script setup lang="ts" name="systemMenuDialog">
 import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
-// import {storeToRefs} from 'pinia';
-// import {useRoutesList} from '/@/stores/routesList';
-// import {i18n} from '/@/i18n/index';
-// import { setBackEndControlRefreshRoutes } from "/@/router/backEnd";
-
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['refresh']);
 import {useMenuApi} from '/@/api/menu/index';
@@ -173,8 +136,6 @@ const IconSelector = defineAsyncComponent(() => import('/@/components/iconSelect
 
 // 定义变量内容
 const menuDialogFormRef = ref();
-// const stores = useRoutesList();
-// const {routesList} = storeToRefs(stores);
 const state = reactive({
   // 参数请参考 `/src/router/route.ts` 中的 `dynamicRoutes` 路由菜单格式
   ruleForm: {
@@ -242,7 +203,7 @@ const getMenuData = async () => {
   let arr: RouteItems = [];
   const menuApi = await useMenuApi();
   await menuApi.getMenu().then(value => {
-    arr = value.children
+    arr = value.data.children
   });
   state.menuList = arr;
   return arr;
@@ -258,15 +219,16 @@ const openDialog = async (type: string, row?: any) => {
       id: row.id
     }
     await menuApi.info(json).then(value => {
-      state.ruleForm = value;
+      state.ruleForm = value.data;
       //getParentIds(state.menuList, value.parentId);
       state.dialog.isShowDialog = true;
       //state.tableData.data = value.children;
+      row.menuType = '0';
+      row.menuSort = Math.floor(Math.random() * 100);
+      state.dialog.title = '修改菜单';
+      state.dialog.submitTxt = '修 改';
     });
-    row.menuType = '0';
-    row.menuSort = Math.floor(Math.random() * 100);
-    state.dialog.title = '修改菜单';
-    state.dialog.submitTxt = '修 改';
+
   } else {
     state.ruleForm.id = -1;
     state.dialog.title = '新增菜单';

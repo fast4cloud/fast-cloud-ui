@@ -74,7 +74,7 @@ export async function setFilterRouteEnd() {
     const menuApi = await useMenuApi();
     await menuApi.getMenu().then(value => {
         let list = [];
-        treeMenu(value.children, list);
+        treeMenu(value.data.children, list);
         list = [...list, ...notFoundAndNoPower];
        dynamicRoutes[0].children=list
     });
@@ -122,7 +122,7 @@ export async function treeMenu(menuList: any, list: any) {
                 name: menu.path,
                 id:menu.id,
                 parentId:menu.parentId,
-                component: () => import('/@/views/' + menu.component),
+                component: () => import('/@/views/' + menu.component+".vue"),
                 meta: {
                     title: menu.menuName,
                     //isLink: "",
