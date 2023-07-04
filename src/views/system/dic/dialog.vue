@@ -70,8 +70,9 @@ const openDialog = async (type: string, row: RowDicType) => {
   if (type === 'edit') {
     const dic = await dicApi();
     await dic.info({id: row.id}).then(value => {
-      state.dataForm = value;
-      state.dataForm.hasStatus = value.status == "0" ? true : false;
+      let data = value.data;
+      state.dataForm = value.data;
+      state.dataForm.hasStatus = data.status == "0" ? true : false;
     });
     state.dialog.title = '修改字典';
     state.dialog.submitTxt = '修 改';
@@ -93,7 +94,7 @@ const closeDialog = () => {
 const onCancel = () => {
   closeDialog();
 };
-const close=()=>{
+const close = () => {
   state.dataForm = {dictName: "", dictType: "", id: -1, remark: "", status: '0', hasStatus: true};
   closeDialog();
   emit('refresh');
@@ -101,7 +102,7 @@ const close=()=>{
 // 提交
 const onSubmit = async () => {
   const dic = await dicApi();
-  state.dataForm.status = state.dataForm.hasStatus ==true ? "0" : "1";
+  state.dataForm.status = state.dataForm.hasStatus == true ? "0" : "1";
   if (state.type == 'add') {
     dic.save(state.dataForm).then(value => {
       if (value.code == '200') {

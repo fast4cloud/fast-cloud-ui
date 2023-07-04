@@ -92,11 +92,11 @@ const onOpenAddDic = (type: string) => {
   dicDialogRef.value.openDialog(type);
 };
 // 打开修改字典弹窗
-const onOpenEditDic = (type: string, row: RowDicType) => {
+const onOpenEditDic = (type: string, row) => {
   dicDialogRef.value.openDialog(type, row);
 };
 // 删除字典
-const onRowDel = (row: RowDicType) => {
+const onRowDel = (row) => {
   ElMessageBox.confirm(`此操作将永久删除字典名称：“${row.dicName}”，是否继续?`, '提示', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
