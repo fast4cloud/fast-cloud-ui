@@ -1,7 +1,7 @@
 import {RouteRecordRaw} from 'vue-router';
 import {storeToRefs} from 'pinia';
 import {formatTwoStageRoutes, formatFlatteningRoutes, router} from '/@/router/index';
-import {dynamicRoutes, notFoundAndNoPower} from '/@/router/route';
+import {dynamicRoutes, notFoundAndNoPower,conventionAndNoPower} from '/@/router/route';
 import pinia from '/@/stores/index';
 import {Session} from '/@/utils/storage';
 import {useUserInfo} from '/@/stores/userInfo';
@@ -75,7 +75,7 @@ export async function setFilterRouteEnd() {
     await menuApi.getMenu().then(value => {
         let list = [];
         treeMenu(value.data.children, list);
-        list = [...list, ...notFoundAndNoPower];
+        list = [...list, ...notFoundAndNoPower,...conventionAndNoPower];
        dynamicRoutes[0].children=list
     });
 

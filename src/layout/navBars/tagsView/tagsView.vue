@@ -252,6 +252,9 @@ const closeCurrentTagsView = (path: string) => {
 				setTimeout(() => {
 					if (state.tagsViewList.length === k && getThemeConfig.value.isShareTagsView ? state.routePath === path : state.routeActive === path) {
 						// 最后一个且高亮时
+            if(arr.length<=0){
+              return
+            }
 						if (arr[arr.length - 1].meta.isDynamic) {
 							// 动态路由（xxx/:id/:name"）
 							if (k !== arr.length) router.push({ name: arr[k].name, params: arr[k].params });

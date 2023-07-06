@@ -271,7 +271,7 @@ const state = reactive({
 			{
 				required: true,
 				message: '请输入小数或整数进行测试',
-				trigger: 'change',
+				trigger: 'blur',
 			},
 		],
 		a2: [

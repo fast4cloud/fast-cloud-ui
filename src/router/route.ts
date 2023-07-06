@@ -1183,7 +1183,21 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 		],*/
 	},
 ];
+/**
+ * 定义常规的界面
+ */
+export const conventionAndNoPower = [
 
+	{
+		path: '/dictdata',
+		name: 'dictdata',
+		component: () => import('/@/views/system/dictdata/index.vue'),
+		meta: {
+			title: '字典数据',
+			isHide: true,
+		},
+	},
+];
 /**
  * 定义404、401界面
  * @link 参考：https://next.router.vuejs.org/zh/guide/essentials/history-mode.html#netlify

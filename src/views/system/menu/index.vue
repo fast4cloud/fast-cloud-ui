@@ -50,11 +50,11 @@
             <el-tag type="success" size="small">{{ scope.row.menuType == 0 ? '目录' : '菜单' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" show-overflow-tooltip width="140">
+        <el-table-column label="操作" show-overflow-tooltip width="190">
           <template #default="scope">
-            <el-button size="small" text type="primary" @click="onOpenAddMenu('add')">新增</el-button>
-            <el-button size="small" text type="primary" @click="onOpenEditMenu('edit', scope.row)">修改</el-button>
-            <el-button size="small" text type="primary" @click="onTabelRowDel(scope.row)">删除</el-button>
+            <el-button size="small"  text type="primary" @click="onOpenAddMenu('add')">新增</el-button>
+            <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditMenu('edit', scope.row)">修改</el-button>
+            <el-button size="small" :icon="Delete" text type="danger" @click="onTabelRowDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,6 +64,10 @@
 </template>
 
 <script setup lang="ts" name="systemMenu">
+import {
+  Delete,
+  Edit,
+} from '@element-plus/icons-vue'
 import {defineAsyncComponent, ref, onMounted, reactive} from 'vue';
 import {RouteRecordRaw} from 'vue-router';
 import {ElMessageBox, ElMessage} from 'element-plus';
@@ -73,15 +77,16 @@ import {useMenuApi} from '/@/api/menu/index';
 // 引入组件
 const MenuDialog = defineAsyncComponent(() => import('/@/views/system/menu/dialog.vue'));
 
-// 定义变量内容
-//const stores = useRoutesList();
-// const {routesList} = storeToRefs(stores);
+
 const menuDialogRef = ref();
 const state = reactive({
   tableData: {
     data: [] as RouteRecordRaw[],
     loading: true,
   },
+  query:{
+    menuName:"",
+  }
 });
 
 // 获取路由数据，真实请从接口获取

@@ -2,7 +2,7 @@
   <div class="system-dic-container layout-padding">
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-input v-model="state.tableData.param.data.dictName" size="default" placeholder="请输入字典名称" style="max-width: 180px"></el-input>
+        <el-input v-model="state.tableData.param.data.dictLabel" size="default" placeholder="请输入字典名称" style="max-width: 180px"></el-input>
         <el-button size="default" type="primary" class="ml10" @click="getTableData">
           <el-icon>
             <ele-Search/>
@@ -13,31 +13,44 @@
           <el-icon>
             <ele-FolderAdd/>
           </el-icon>
-          新增字典
+          新增字典数据
+        </el-button>
+        <el-button size="default" type="danger" class="ml10" @click="onClose('add')">
+          <el-icon>
+            <ele-Close/>
+          </el-icon>
+          返回
         </el-button>
       </div>
       <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
         <el-table-column type="index" label="序号" width="60"/>
-        <el-table-column prop="dictName" label="字典名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="dictType" label="字典类型" show-overflow-tooltip>
+        <el-table-column prop="id" label="字典编码" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="dictLabel" label="字典标签" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="dictValue" label="字典键值" show-overflow-tooltip></el-table-column>
+<!--        <el-table-column prop="dictType" label="字典类型" show-overflow-tooltip></el-table-column>-->
+        <el-table-column prop="dictSort" label="字典排序" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="cssClass" label="样式属性" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="listClass" label="表格回显样式" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="isDefault" label="是否默认" show-overflow-tooltip>
           <template #default="scope">
-            <router-link :to="'/dictdata?dictType=' + scope.row.dictType" class="link-type">
-              <span>{{ scope.row.dictType }}</span>
-            </router-link>
+            <el-tag type="success" v-if="scope.row.isDefault=='Y'">是</el-tag>
+            <el-tag type="info" v-else>否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="字典状态" show-overflow-tooltip>
+        <el-table-column prop="status" label="状态" show-overflow-tooltip>
           <template #default="scope">
             <el-tag type="success" v-if="scope.row.status=='0'">启用</el-tag>
             <el-tag type="info" v-else>禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="字典描述" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="updateBy" label="更新者" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="remark" label="备注" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" width="150">
           <template #default="scope">
-            <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改</el-button>
-            <el-button size="small" text :icon="Delete"  type="danger" @click="onRowDel(scope.row)">删除</el-button>
+            <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改
+            </el-button>
+            <el-button size="small" text :icon="Delete" type="danger" @click="onRowDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,13 +79,17 @@ import {
 } from '@element-plus/icons-vue'
 import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
 import {ElMessageBox, ElMessage} from 'element-plus';
-import {dicApi} from '/@/api/dic/index';
+import {sysdictdataApi} from '/@/api/sysdictdata/index';
+import {useRouter} from 'vue-router'
 // 引入组件
-const DicDialog = defineAsyncComponent(() => import('/@/views/system/dic/dialog.vue'));
+const DicDialog = defineAsyncComponent(() => import('/@/views/system/dictdata/dialog.vue'));
 
 // 定义变量内容
 const dicDialogRef = ref();
-const state = reactive<SysDicState>({
+const {currentRoute} = useRouter();
+const router = useRouter()
+const route = currentRoute.value;
+const state = reactive({
   tableData: {
     data: [],
     total: 0,
@@ -81,7 +98,8 @@ const state = reactive<SysDicState>({
       currentPage: 1,
       pageSize: 5,
       data:{
-        dictName:'',
+        dictType:"",
+        dictLabel:""
       }
     },
   },
@@ -90,7 +108,10 @@ const state = reactive<SysDicState>({
 // 初始化表格数据
 const getTableData = async () => {
   state.tableData.loading = true;
-  const dic = await dicApi();
+  //获取地址栏上的值
+  let dictType = route.query.dictType
+  const dic = await sysdictdataApi();
+  state.tableData.param.data.dictType = dictType;
   await dic.queryPage(state.tableData.param).then(data => {
     // debugger
     const dataList = data.data.records;
@@ -108,15 +129,24 @@ const onOpenAddDic = (type: string) => {
 const onOpenEditDic = (type: string, row) => {
   dicDialogRef.value.openDialog(type, row);
 };
+//关闭
+const onClose=()=>{
+    //跳转
+
+  router.push({
+    path: '/dic'
+
+  })
+}
 // 删除字典
 const onRowDel = (row) => {
-  ElMessageBox.confirm(`此操作将永久删除字典名称：“${row.dicName}”，是否继续?`, '提示', {
+  ElMessageBox.confirm(`此操作将永久删:“${row.id}”，是否继续?`, '提示', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
     type: 'warning',
   })
       .then(async () => {
-        const dic = await dicApi();
+        const dic = await sysdictdataApi();
         let json = {
           id: row.id
         }
@@ -148,15 +178,3 @@ onMounted(() => {
   getTableData();
 });
 </script>
-<style rel="stylesheet/scss" lang="scss">
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-  border-bottom: none;
-  text-decoration: none;
-&:hover {
-   color: rgb(32, 160, 255);
- }
-}
-</style>
