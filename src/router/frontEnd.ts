@@ -1,14 +1,16 @@
 import {RouteRecordRaw} from 'vue-router';
 import {storeToRefs} from 'pinia';
 import {formatTwoStageRoutes, formatFlatteningRoutes, router} from '/@/router/index';
-import {dynamicRoutes, notFoundAndNoPower,conventionAndNoPower} from '/@/router/route';
+import {dynamicRoutes, notFoundAndNoPower, conventionAndNoPower} from '/@/router/route';
 import pinia from '/@/stores/index';
 import {Session} from '/@/utils/storage';
 import {useUserInfo} from '/@/stores/userInfo';
+import {dict} from '/@/stores/dict';
 import {useTagsViewRoutes} from '/@/stores/tagsViewRoutes';
 import {useRoutesList} from '/@/stores/routesList';
 import {NextLoading} from '/@/utils/loading';
 import {useMenuApi} from '/@/api/menu/index';
+import {dicApi} from '/@/api/dic/index';
 import Layout from '/@/layout'
 
 // 前端控制路由
@@ -33,8 +35,21 @@ export async function initFrontEndControlRoutes() {
     if (useUserInfo().userInfos.roles.length <= 0) return Promise.resolve(true);
     // 添加动态路由
     await setAddRoute();
+    //加载字典
+    await initDict();
     // 设置递归过滤有权限的路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
     setFilterMenuAndCacheTagsViewRoutes();
+}
+
+export async function initDict() {
+    const dici = new dicApi();
+    await dici.getDictAll({}).then(value => {
+        if (value.code == '200') {
+            let data = value.data;
+            //赋值
+            dict(pinia).setDictAll(data)
+        }
+    })
 }
 
 /**
@@ -52,18 +67,6 @@ export async function setAddRoute() {
     });
 }
 
-/**
- * 删除/重置路由
- * @method router.removeRoute
- * @description 此处循环为 dynamicRoutes（/@/router/route）第一个顶级 children 的路由一维数组，非多级嵌套
- * @link 参考：https://next.router.vuejs.org/zh/api/#push
- */
-export async function frontEndsResetRoute() {
-    await setFilterRouteEnd().forEach((route: RouteRecordRaw) => {
-        const routeName: any = route.name;
-        router.hasRoute(routeName) && router.removeRoute(routeName);
-    });
-}
 
 /**
  * 获取有当前用户权限标识的路由数组，进行对原路由的替换
@@ -75,8 +78,8 @@ export async function setFilterRouteEnd() {
     await menuApi.getMenu().then(value => {
         let list = [];
         treeMenu(value.data.children, list);
-        list = [...list, ...notFoundAndNoPower,...conventionAndNoPower];
-       dynamicRoutes[0].children=list
+        list = [...list, ...notFoundAndNoPower, ...conventionAndNoPower];
+        dynamicRoutes[0].children = list
     });
 
     //let filterRouteEnd: any = formatTwoStageRoutes(formatFlatteningRoutes(dynamicRoutes));
@@ -98,8 +101,8 @@ export async function treeMenu(menuList: any, list: any) {
                 //说明是目录
                 path: `/${menu.path}`,
                 name: menu.path,
-                id:menu.id,
-                parentId:menu.parentId,
+                id: menu.id,
+                parentId: menu.parentId,
                 component: () => import('/@/layout/routerView/parent.vue'),
                 "redirect": "/system/menu",
                 meta: {
@@ -120,9 +123,9 @@ export async function treeMenu(menuList: any, list: any) {
                 //说明是目录
                 path: `/${menu.path}`,
                 name: menu.path,
-                id:menu.id,
-                parentId:menu.parentId,
-                component: () => import('/@/views/' + menu.component+".vue"),
+                id: menu.id,
+                parentId: menu.parentId,
+                component: () => import('/@/views/' + menu.component + ".vue"),
                 meta: {
                     title: menu.menuName,
                     //isLink: "",
@@ -144,28 +147,6 @@ export async function treeMenu(menuList: any, list: any) {
 
 }
 
-/**
- * 获取当前用户权限标识去比对路由表（未处理成多级嵌套路由）
- * @description 这里主要用于动态路由的添加，router.addRoute
- * @link 参考：https://next.router.vuejs.org/zh/api/#addroute
- * @param chil dynamicRoutes（/@/router/route）第一个顶级 children 的下路由集合
- * @returns 返回有当前用户权限标识的路由数组
- */
-export function setFilterRoute(chil: any) {
-    const stores = useUserInfo(pinia);
-    const {userInfos} = storeToRefs(stores);
-    let filterRoute: any = [];
-    chil.forEach((route: any) => {
-        if (route.meta.roles) {
-            route.meta.roles.forEach((metaRoles: any) => {
-                userInfos.value.roles.forEach((roles: any) => {
-                    if (metaRoles === roles) filterRoute.push({...route});
-                });
-            });
-        }
-    });
-    return filterRoute;
-}
 
 /**
  * 缓存多级嵌套数组处理后的一维数组

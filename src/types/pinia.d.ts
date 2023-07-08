@@ -31,7 +31,9 @@ declare interface TagsViewRoutesState<T = any> {
 	tagsViewRoutes: T[];
 	isTagsViewCurrenFull: Boolean;
 }
-
+declare interface dictState<T = any> {
+	dictAll: T[];
+}
 // 路由列表
 declare interface RoutesListState<T = any> {
 	routesList: T[];

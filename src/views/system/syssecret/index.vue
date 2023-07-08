@@ -25,10 +25,16 @@
         <el-table-column prop="accessIp" label="访问IP限制" show-overflow-tooltip></el-table-column>
         <el-table-column prop="publicKey" label="公钥" show-overflow-tooltip></el-table-column>
         <el-table-column prop="privateKey" label="私钥" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="hasTop" label="是否开启" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="hasTop" label="是否开启" show-overflow-tooltip>
+          <template #default="scope">
+            <dict-tag dictType="sys_open" :value="scope.row.hasTop"/>
+          </template>
+        </el-table-column>
         <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
         <el-table-column prop="updateB" label="修改者" show-overflow-tooltip></el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="150"
+
+        >
           <template #default="scope">
             <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改</el-button>
             <el-button size="small" text :icon="Delete" type="primary" @click="onRowDel(scope.row)">删除</el-button>
@@ -63,17 +69,17 @@
   import {syssecretApi} from '/@/api/SysSecret';
   // 引入组件
   const DicDialog = defineAsyncComponent(() => import('/@/views/system/syssecret/dialog.vue'));
-
+  const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
   // 定义变量内容
   const dicDialogRef = ref();
-  const state = reactive<SysSecret>({
+  const state = reactive({
     tableData: {
       data: [],
       total: 0,
       loading: false,
       param: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });
@@ -91,11 +97,11 @@
     })
 
   };
-  // 打开新增字典弹窗
+  // 打开新增
   const onOpenAddDic = (type: string) => {
     dicDialogRef.value.openDialog(type);
   };
-  // 打开修改字典弹窗
+  // 打开修改
   const onOpenEditDic = (type: string, row) => {
     dicDialogRef.value.openDialog(type, row);
   };

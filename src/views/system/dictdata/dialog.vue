@@ -28,15 +28,24 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
+            <el-form-item label="回显样式">
+              <el-select v-model="state.dataForm.listClass" class="m-2" placeholder="Select" size="large">
+                <el-option
+                    v-for="item in state.options"
+                    :key="item.dictValue"
+                    :label="item.dictLabel"
+                    :value="item.dictValue"
+                />
+              </el-select>
+              <!--              <el-input v-model="state.dataForm.listClass" placeholder="请输入表格回显样式" clearable></el-input>-->
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="样式属性">
               <el-input v-model="state.dataForm.cssClass" placeholder="请输入样式属性（其他样式扩展）" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-            <el-form-item label="回显样式">
-              <el-input v-model="state.dataForm.listClass" placeholder="请输入表格回显样式" clearable></el-input>
-            </el-form-item>
-          </el-col>
+
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="是否默认">
               <el-radio-group v-model="state.dataForm.hasDefault">
@@ -75,6 +84,7 @@
 <script setup lang="ts" name="systemDicDialog">
 import {reactive, ref} from 'vue';
 import {sysdictdataApi} from '/@/api/sysdictdata/index';
+import DictUtil from '/@/utils/DictUtil';
 import {ElMessage} from "element-plus";
 import {useRouter} from 'vue-router'
 import type {FormInstance, FormRules} from 'element-plus'
@@ -214,6 +224,7 @@ const state = reactive({
     remark: '' // 备注
     ,
   },
+  // sysOpenList:[],
   dialog: {
     isShowDialog: false,
     type: '',
@@ -221,11 +232,16 @@ const state = reactive({
     submitTxt: '',
   },
   type: "",
+  options:[],
 });
 
 // 打开弹窗
 const openDialog = async (type: string, row) => {
   state.type = type;
+  let dict = new DictUtil();
+  await dict.getDictByType("table_class").then(value => {
+    state.options=value;
+  });
   state.dataForm.dictType = route.query.dictType
   if (type === 'edit') {
     const dic = await sysdictdataApi();
@@ -257,6 +273,8 @@ const onCancel = () => {
 };
 const close = () => {
   state.dataForm = {
+    hasDefault: true,
+    hasStatus: true,
     dictSort: '0' // 字典排序
     ,
     dictLabel: '' // 字典标签

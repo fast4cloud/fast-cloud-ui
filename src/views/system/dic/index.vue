@@ -28,9 +28,9 @@
         </el-table-column>
         <el-table-column prop="status" label="字典状态" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag type="success" v-if="scope.row.status=='0'">启用</el-tag>
-            <el-tag type="info" v-else>禁用</el-tag>
+            <dict-tag dictType="sys_open" :value="scope.row.status"/>
           </template>
+
         </el-table-column>
         <el-table-column prop="remark" label="字典描述" show-overflow-tooltip></el-table-column>
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
@@ -69,7 +69,7 @@ import {ElMessageBox, ElMessage} from 'element-plus';
 import {dicApi} from '/@/api/dic/index';
 // 引入组件
 const DicDialog = defineAsyncComponent(() => import('/@/views/system/dic/dialog.vue'));
-
+const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
 // 定义变量内容
 const dicDialogRef = ref();
 const state = reactive<SysDicState>({
@@ -79,7 +79,7 @@ const state = reactive<SysDicState>({
     loading: false,
     param: {
       currentPage: 1,
-      pageSize: 5,
+      pageSize: 10,
       data:{
         dictName:'',
       }

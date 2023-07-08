@@ -52,6 +52,13 @@ export function dicApi() {
                 method: 'post',
                 data,
             });
+        },
+        getDictAll: (data: object) => {
+            return request({
+                url: request.adornUrl("fast-admin/fastadmin/sysdicttype/getDictAll"),
+                method: 'post',
+                data,
+            });
         }
     };
 }

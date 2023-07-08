@@ -30,17 +30,19 @@
 <!--        <el-table-column prop="dictType" label="字典类型" show-overflow-tooltip></el-table-column>-->
         <el-table-column prop="dictSort" label="字典排序" show-overflow-tooltip></el-table-column>
         <el-table-column prop="cssClass" label="样式属性" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="listClass" label="表格回显样式" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="listClass" label="表格回显样式" show-overflow-tooltip>
+          <template #default="scope">
+            <dict-tag dictType="table_class" :value="scope.row.listClass"/>
+          </template>
+        </el-table-column>
         <el-table-column prop="isDefault" label="是否默认" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag type="success" v-if="scope.row.isDefault=='Y'">是</el-tag>
-            <el-tag type="info" v-else>否</el-tag>
+            <dict-tag dictType="sys_default" :value="scope.row.isDefault"/>
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag type="success" v-if="scope.row.status=='0'">启用</el-tag>
-            <el-tag type="info" v-else>禁用</el-tag>
+            <dict-tag dictType="sys_open" :value="scope.row.status"/>
           </template>
         </el-table-column>
         <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
@@ -83,7 +85,7 @@ import {sysdictdataApi} from '/@/api/sysdictdata/index';
 import {useRouter} from 'vue-router'
 // 引入组件
 const DicDialog = defineAsyncComponent(() => import('/@/views/system/dictdata/dialog.vue'));
-
+const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
 // 定义变量内容
 const dicDialogRef = ref();
 const {currentRoute} = useRouter();
@@ -96,7 +98,7 @@ const state = reactive({
     loading: false,
     param: {
       currentPage: 1,
-      pageSize: 5,
+      pageSize: 10,
       data:{
         dictType:"",
         dictLabel:""
