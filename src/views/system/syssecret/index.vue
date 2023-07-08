@@ -2,7 +2,7 @@
   <div class="system-dic-container layout-padding">
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-input size="default" placeholder="请输入字典名称" style="max-width: 180px"></el-input>
+        <el-input v-model="state.tableData.param.data.appName" size="default" placeholder="请输入字典名称" style="max-width: 180px"></el-input>
         <el-button size="default" type="primary" class="ml10" @click="getTableData">
           <el-icon>
             <ele-Search/>
@@ -33,7 +33,6 @@
         <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
         <el-table-column prop="updateB" label="修改者" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" width="150"
-
         >
           <template #default="scope">
             <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改</el-button>
@@ -80,6 +79,9 @@
       param: {
         currentPage: 1,
         pageSize: 10,
+        data:{
+          appName:"",
+        }
       },
     },
   });
