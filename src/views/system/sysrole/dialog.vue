@@ -99,24 +99,6 @@ const rules = reactive<FormRules>({
 
   ]
   ,
-  delFlag: [
-    {
-      required: true,
-      message: '删除标志（0代表存在 1代表删除）不能为空!',
-      trigger: 'blur',
-    }
-
-  ]
-  ,
-  createBy: [
-    {
-      required: true,
-      message: '创建者不能为空!',
-      trigger: 'blur',
-    }
-
-  ]
-  ,
   updateBy: [
     {
       required: true,
@@ -141,12 +123,6 @@ const state = reactive({
     roleSort: '0' // 显示顺序
     ,
     status: '' // 角色状态（0正常 1停用）
-    ,
-    delFlag: '' // 删除标志（0代表存在 1代表删除）
-    ,
-    createBy: '' // 创建者
-    ,
-    updateBy: '' // 更新者
     ,
   },
   dialog: {
@@ -207,13 +183,6 @@ const clearData = () => {
     roleSort: '0' // 显示顺序
     ,
     status: '' // 角色状态（0正常 1停用）
-    ,
-    delFlag: '' // 删除标志（0代表存在 1代表删除）
-    ,
-    createBy: '' // 创建者
-    ,
-    updateBy: '' // 更新者
-    ,
   };
 }
 const close = () => {

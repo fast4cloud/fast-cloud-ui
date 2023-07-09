@@ -1,6 +1,6 @@
 import request from '/@/utils/request'
 
-export function sysroleApi() {
+export function sysuserApi() {
   return {
     /**
      * 分页查询
@@ -8,21 +8,14 @@ export function sysroleApi() {
      */
     queryPage: (data: object) => {
       return request({
-        url: request.adornUrl('fast-admin/fastadmin/sysrole/queryPage'),
-        method: 'post',
-        data,
-      });
-    },
-    queryList: (data: object) => {
-      return request({
-        url: request.adornUrl('fast-admin/fastadmin/sysrole/queryList'),
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/queryPage'),
         method: 'post',
         data,
       });
     },
     info: (data: object) => {
       return request({
-        url: request.adornUrl('fast-admin/fastadmin/sysrole/info'),
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/info'),
         method: 'post',
         data,
       });
@@ -33,7 +26,7 @@ export function sysroleApi() {
      */
     save: (data: object) => {
       return request({
-        url: request.adornUrl('fast-admin/fastadmin/sysrole/save'),
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/save'),
         method: 'post',
         data,
       });
@@ -44,7 +37,7 @@ export function sysroleApi() {
      */
     update: (data: object) => {
       return request({
-        url: request.adornUrl('fast-admin/fastadmin/sysrole/update'),
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/update'),
         method: 'post',
         data,
       });
@@ -55,7 +48,7 @@ export function sysroleApi() {
      */
     delete: (data: object) => {
       return request({
-        url: request.adornUrl('fast-admin/fastadmin/sysrole/delete'),
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/delete'),
         method: 'post',
         data,
       });
