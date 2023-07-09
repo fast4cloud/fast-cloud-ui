@@ -12,7 +12,14 @@
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="角色状态">
-              <el-switch v-model="state.dataForm.status" inline-prompt active-text="启" inactive-text="禁"></el-switch>
+              <el-select v-model="state.dataForm.status" class="m-2" placeholder="Select" size="large">
+                <el-option
+                    v-for="item in state.options"
+                    :key="item.dictValue"
+                    :label="item.dictLabel"
+                    :value="item.dictValue"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -29,8 +36,9 @@
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="菜单权限">
-              <el-tree ref="treeRef"  node-key="id" :data="state.menuData"
-                       :default-checked-keys="state.dataForm.roleMenuIds"  :props="state.menuProps" show-checkbox class="menu-data-tree"/>
+              <el-tree ref="treeRef" node-key="id" :data="state.menuData"
+                       :default-checked-keys="state.dataForm.roleMenuIds" :props="state.menuProps" show-checkbox
+                       class="menu-data-tree"/>
             </el-form-item>
           </el-col>
 
@@ -59,6 +67,7 @@ import type {FormInstance, FormRules} from 'element-plus'
 const emit = defineEmits(['refresh']);
 import {useMenuApi} from '/@/api/menu/index';
 // 定义变量内容
+import DictUtil from '/@/utils/DictUtil';
 const ruleFormRef = ref();
 const treeRef = ref<InstanceType<typeof ElTree>>()
 const rules = reactive<FormRules>({
@@ -126,7 +135,7 @@ const state = reactive({
     label: 'menuName',
   },
   dataForm: {
-    roleMenuIds:[],
+    roleMenuIds: [],
     roleName: '' // 角色名称
     ,
     roleSort: '0' // 显示顺序
@@ -146,6 +155,7 @@ const state = reactive({
     title: '',
     submitTxt: '',
   },
+  options:[],
   type: "",
 });
 const getMenuData = async () => {
@@ -157,6 +167,10 @@ const getMenuData = async () => {
 // 打开弹窗
 const openDialog = async (type: string, row) => {
   state.type = type;
+  let dict = new DictUtil();
+  await dict.getDictByType("sys_role_status").then(value => {
+    state.options=value;
+  });
   //加载菜单
   await getMenuData();
   if (type === 'edit') {
@@ -179,13 +193,14 @@ const openDialog = async (type: string, row) => {
 };
 // 关闭弹窗
 const closeDialog = () => {
+  clearData();
   state.dialog.isShowDialog = false;
 };
 // 取消
 const onCancel = () => {
   closeDialog();
 };
-const close = () => {
+const clearData = () => {
   state.dataForm = {
     roleName: '' // 角色名称
     ,
@@ -200,6 +215,9 @@ const close = () => {
     updateBy: '' // 更新者
     ,
   };
+}
+const close = () => {
+  clearData()
   closeDialog();
   emit('refresh');
 }
@@ -207,19 +225,19 @@ const close = () => {
 const onSubmit = async (formEl: FormInstance | undefined) => {
   const dic = await sysroleApi();
   if (!formEl) return
-  state.dataForm.roleMenuIds=treeRef.value.getCheckedKeys();
+  state.dataForm.roleMenuIds = treeRef.value.getCheckedKeys();
   formEl.validate((valid, fields) => {
     if (valid) {
       if (state.type == 'add') {
-       // console.log(treeRef.value.getCheckedKeys().join())
-          dic.save(state.dataForm).then(value => {
-            if (value.code == '200') {
-              ElMessage.success(value.message);
-            } else {
-              ElMessage.error(value.message);
-            }
-            close();
-          })
+        // console.log(treeRef.value.getCheckedKeys().join())
+        dic.save(state.dataForm).then(value => {
+          if (value.code == '200') {
+            ElMessage.success(value.message);
+          } else {
+            ElMessage.error(value.message);
+          }
+          close();
+        })
       } else {
         //修改
         dic.update(state.dataForm).then(value => {

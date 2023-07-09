@@ -265,13 +265,10 @@ const openDialog = async (type: string, row) => {
 };
 // 关闭弹窗
 const closeDialog = () => {
+  clearData()
   state.dialog.isShowDialog = false;
 };
-// 取消
-const onCancel = () => {
-  closeDialog();
-};
-const close = () => {
+const clearData = () => {
   state.dataForm = {
     hasDefault: true,
     hasStatus: true,
@@ -296,6 +293,13 @@ const close = () => {
     remark: '' // 备注
     ,
   };
+}
+// 取消
+const onCancel = () => {
+  closeDialog();
+};
+const close = () => {
+
   closeDialog();
   emit('refresh');
 }

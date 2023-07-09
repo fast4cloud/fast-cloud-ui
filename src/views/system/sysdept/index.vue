@@ -2,7 +2,7 @@
   <div class="system-dic-container layout-padding">
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-input v-model="state.tableData.param.data.roleName" size="default" placeholder="请输入查询内容" style="max-width: 180px"></el-input>
+        <el-input size="default" placeholder="请输入查询内容" style="max-width: 180px"></el-input>
         <el-button size="default" type="primary" class="ml10" @click="getTableData">
           <el-icon>
             <ele-Search/>
@@ -16,23 +16,34 @@
           新增
         </el-button>
       </div>
-      <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column type="index" label="序号" width="60"/>
-        <el-table-column prop="id" label="角色ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="roleName" label="角色名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="roleSort" label="显示顺序" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="status" label="角色状态" show-overflow-tooltip>
+
+      <el-table
+          :data="state.tableData.data"
+          v-loading="state.tableData.loading"
+          style="width: 100%"
+          row-key="id"
+          default-expand-all
+          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+        <el-table-column prop="deptName" label="部门名称" show-overflow-tooltip></el-table-column>
+        <el-table-column label="排序" show-overflow-tooltip width="80">
           <template #default="scope">
-            <dict-tag dictType="sys_role_status" :value="scope.row.status"/>
+            {{ scope.$index }}
           </template>
         </el-table-column>
-
-        <el-table-column prop="remark" label="备注" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="leader" label="负责人" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="phone" label="联系电话" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="leader" label="负责人" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="status" label="部门状态" show-overflow-tooltip>
+          <template #default="scope">
+            <dict-tag dictType="sys_dept_status" :value="scope.row.status"/>
+          </template>
+        </el-table-column>
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
-        <el-table-column label="操作" width="150" >
-          <template #default="scope" >
-            <div v-if="scope.row.id !==1" >
+        <el-table-column label="操作" width="150">
+          <template #default="scope">
+            <div v-if="scope.row.id!=1">
               <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改
               </el-button>
               <el-button size="small" text :icon="Delete" type="danger" @click="onRowDel(scope.row)">删除</el-button>
@@ -41,19 +52,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-          @size-change="onHandleSizeChange"
-          @current-change="onHandleCurrentChange"
-          class="mt15"
-          :pager-count="5"
-          :page-sizes="[10, 20, 30]"
-          v-model:current-page="state.tableData.param.currentPage"
-          background
-          v-model:page-size="state.tableData.param.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="state.tableData.total"
-      >
-      </el-pagination>
+
     </el-card>
     <DicDialog ref="dicDialogRef" @refresh="getTableData()"/>
   </div>
@@ -66,11 +65,11 @@ import {
 } from '@element-plus/icons-vue'
 import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
 import {ElMessageBox, ElMessage} from 'element-plus';
-import {sysroleApi} from '/@/api/sysrole/index';
-import {useMenuApi} from "/@/api/menu";
+import {sysdeptApi} from '/@/api/SysDept';
 // 引入组件
-const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysrole/dialog.vue'));
+const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysdept/dialog.vue'));
 const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
+
 // 定义变量内容
 const dicDialogRef = ref();
 const state = reactive({
@@ -81,9 +80,6 @@ const state = reactive({
     param: {
       currentPage: 1,
       pageSize: 5,
-      data:{
-        roleName:"",
-      }
     },
   },
 });
@@ -91,17 +87,16 @@ const state = reactive({
 // 初始化表格数据
 const getTableData = async () => {
   state.tableData.loading = true;
-  const dic = await sysroleApi();
-  await dic.queryPage(state.tableData.param).then(data => {
+  const dic = await sysdeptApi();
+  await dic.getDept(state.tableData.param).then(data => {
     // debugger
-    const dataList = data.data.records;
-    state.tableData.data = dataList;
-    state.tableData.total = data.data.total;
+   // const dataList = data.data.children;
+    state.tableData.data = data.data.children;
+    //state.tableData.total = data.data.total;
     state.tableData.loading = false;
   })
 
 };
-
 // 打开新增弹窗
 const onOpenAddDic = (type: string) => {
   dicDialogRef.value.openDialog(type);
@@ -118,7 +113,7 @@ const onRowDel = (row) => {
     type: 'warning',
   })
       .then(async () => {
-        const dic = await sysroleApi();
+        const dic = await sysdeptApi();
         let json = {
           id: row.id
         }

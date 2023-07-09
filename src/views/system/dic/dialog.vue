@@ -110,15 +110,17 @@ const openDialog = async (type: string, row: RowDicType) => {
 };
 // 关闭弹窗
 const closeDialog = () => {
-  state.dataForm = {dictName: "", dictType: "", id: -1, remark: "", status: '0', hasStatus: true};
+  clearData()
   state.dialog.isShowDialog = false;
 };
+const clearData = () => {
+  state.dataForm = {dictName: "", dictType: "", id: -1, remark: "", status: '0', hasStatus: true};
+}
 // 取消
 const onCancel = () => {
   closeDialog();
 };
 const close = () => {
-  state.dataForm = {dictName: "", dictType: "", id: -1, remark: "", status: '0', hasStatus: true};
   closeDialog();
   emit('refresh');
 }

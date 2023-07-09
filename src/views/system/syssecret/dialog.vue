@@ -216,13 +216,14 @@ const openDialog = async (type: string, row) => {
 };
 // 关闭弹窗
 const closeDialog = () => {
+  clearData();
   state.dialog.isShowDialog = false;
 };
 // 取消
 const onCancel = () => {
   closeDialog();
 };
-const close = () => {
+const clearData = () => {
   state.dataForm = {
     appId: '' // 分配给客户端的唯一标识
     ,
@@ -243,6 +244,9 @@ const close = () => {
     updateB: '' // 修改者
     ,
   };
+}
+const close = () => {
+
   closeDialog();
   emit('refresh');
 }
