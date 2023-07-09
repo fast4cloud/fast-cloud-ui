@@ -42,7 +42,7 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" show-overflow-tooltip>
           <template #default="scope">
-            <dict-tag dictType="sys_open" :value="scope.row.status"/>
+            <dict-tag dictType="sys_common_status" :value="scope.row.status"/>
           </template>
         </el-table-column>
         <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>

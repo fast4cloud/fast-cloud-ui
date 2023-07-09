@@ -2,7 +2,7 @@
   <div class="system-dic-container layout-padding">
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-input v-model="state.tableData.param.data.appName" size="default" placeholder="请输入字典名称" style="max-width: 180px"></el-input>
+        <el-input v-model="state.tableData.param.data.apiMethod" size="default" placeholder="请输入查询方法名称" style="max-width: 180px"></el-input>
         <el-button size="default" type="primary" class="ml10" @click="getTableData">
           <el-icon>
             <ele-Search/>
@@ -19,27 +19,21 @@
       <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
         <el-table-column type="index" label="序号" width="60"/>
         <el-table-column prop="id" label="" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="appId" label="appId" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="appName" label="应用名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="accessRole" label="角色访问" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="accessIp" label="访问IP限制" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="publicKey" label="公钥" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="privateKey" label="私钥" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="hasTop" label="是否开启" show-overflow-tooltip>
+        <el-table-column prop="apiMethod" label="方法名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="parseTemp" label="脱敏模板" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="rulesJson" label="脱敏规则" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="isOpen" label="是否开启" show-overflow-tooltip>
           <template #default="scope">
-            <dict-tag dictType="sys_open" :value="scope.row.hasTop"/>
+            <dict-tag dictType="sys_open" :value="scope.row.isOpen"/>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="remark" label="备注" show-overflow-tooltip></el-table-column>
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
-        <el-table-column label="操作" width="150"
-        >
-          <template #default="scope">
-            <div v-if="scope.row.appId!='fast_cloud_ui'">
-              <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改</el-button>
-              <el-button size="small" text :icon="Delete" type="danger" @click="onRowDel(scope.row)">删除</el-button>
-            </div>
 
+        <el-table-column label="操作" width="150">
+          <template #default="scope">
+            <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改</el-button>
+            <el-button size="small" text :icon="Delete" type="danger" @click="onRowDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,10 +62,11 @@
   } from '@element-plus/icons-vue'
   import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
   import {ElMessageBox, ElMessage} from 'element-plus';
-  import {syssecretApi} from '/@/api/SysSecret';
+  import {sysdatamaskApi} from '/@/api/SysDataMask';
   // 引入组件
-  const DicDialog = defineAsyncComponent(() => import('/@/views/system/syssecret/dialog.vue'));
+  const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysdatamask/dialog.vue'));
   const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
+
   // 定义变量内容
   const dicDialogRef = ref();
   const state = reactive({
@@ -83,7 +78,7 @@
         currentPage: 1,
         pageSize: 10,
         data:{
-          appName:"",
+          apiMethod:'',
         }
       },
     },
@@ -92,7 +87,7 @@
   // 初始化表格数据
   const getTableData = async () => {
     state.tableData.loading = true;
-    const dic = await syssecretApi();
+    const dic = await sysdatamaskApi();
     await dic.queryPage(state.tableData.param).then(data => {
       // debugger
       const dataList = data.data.records;
@@ -102,11 +97,11 @@
     })
 
   };
-  // 打开新增
+  // 打开新增弹窗
   const onOpenAddDic = (type: string) => {
     dicDialogRef.value.openDialog(type);
   };
-  // 打开修改
+  // 打开修改弹窗
   const onOpenEditDic = (type: string, row) => {
     dicDialogRef.value.openDialog(type, row);
   };
@@ -118,7 +113,7 @@
       type: 'warning',
     })
             .then(async () => {
-              const dic = await syssecretApi();
+              const dic = await sysdatamaskApi();
               let json = {
                 id: row.id
               }

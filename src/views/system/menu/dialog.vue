@@ -8,13 +8,12 @@
               <el-cascader
                   :options="state.menuData"
                   :props="{ checkStrictly: true, value: 'id', label: 'menuName' }"
-                  placeholder="请选择上级菜单"
+                  placeholder="主目录"
                   clearable
                   class="w100"
                   :id="index"
                   ref="cascaderHandle"
                   v-model="state.ruleForm.parentIds"
-
               >
                 <template #default="{ node, data }">
                   <span>{{ data.menuName }}</span>
@@ -167,10 +166,14 @@ const state = reactive({
 });
 const formatLastOption = (valueArr) => {
   //state.ruleForm.parentId
-  let valList = [];
+  if (valueArr == null) {
+    //默认主目录
+    return 0;
+  }
+  let valList = 0;
   if (valueArr.length > 1) {
     valList = valueArr[valueArr.length - 1];
-  } else {
+  } else if (valueArr.length > 0) {
     valList = valueArr[0];
   }
   return valList;

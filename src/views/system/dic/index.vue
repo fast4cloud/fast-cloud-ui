@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column prop="status" label="字典状态" show-overflow-tooltip>
           <template #default="scope">
-            <dict-tag dictType="sys_open" :value="scope.row.status"/>
+            <dict-tag dictType="sys_common_status" :value="scope.row.status"/>
           </template>
 
         </el-table-column>

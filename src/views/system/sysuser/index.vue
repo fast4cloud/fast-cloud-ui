@@ -2,7 +2,7 @@
   <div class="system-dic-container layout-padding">
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-input size="default" placeholder="请输入查询内容" style="max-width: 180px"></el-input>
+        <el-input v-model="state.tableData.param.data.userName" size="default" placeholder="请输入用户名称" style="max-width: 180px"></el-input>
         <el-button size="default" type="primary" class="ml10" @click="getTableData">
           <el-icon>
             <ele-Search/>
@@ -89,6 +89,9 @@
       param: {
         currentPage: 1,
         pageSize: 10,
+        data:{
+          userName:"",
+        }
       },
     },
   });

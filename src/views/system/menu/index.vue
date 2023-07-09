@@ -16,11 +16,12 @@
           新增菜单
         </el-button>
       </div>
+
       <el-table
           :data="state.tableData.data"
           v-loading="state.tableData.loading"
           style="width: 100%"
-          row-key="path"
+          row-key="id"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column label="菜单名称" show-overflow-tooltip>
@@ -40,6 +41,11 @@
             <span>{{ scope.row.permission }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="显示" show-overflow-tooltip prop="visible" >
+          <template #default="scope">
+            <dict-tag dictType="sys_show_hide" :value="scope.row.visible"/>
+          </template>
+        </el-table-column>
         <el-table-column label="排序" show-overflow-tooltip width="80">
           <template #default="scope">
             {{ scope.$index }}
@@ -52,9 +58,12 @@
         </el-table-column>
         <el-table-column label="操作" show-overflow-tooltip width="190">
           <template #default="scope">
-            <el-button size="small"  text type="primary" @click="onOpenAddMenu('add')">新增</el-button>
-            <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditMenu('edit', scope.row)">修改</el-button>
-            <el-button size="small" :icon="Delete" text type="danger" @click="onTabelRowDel(scope.row)">删除</el-button>
+            <div >
+              <el-button size="small"  text type="primary" @click="onOpenAddMenu('add')">新增</el-button>
+              <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditMenu('edit', scope.row)">修改</el-button>
+              <el-button size="small" v-if="scope.row.id!=1&&scope.row.id!=2" :icon="Delete" text type="danger" @click="onTabelRowDel(scope.row)">删除</el-button>
+            </div>
+
           </template>
         </el-table-column>
       </el-table>
@@ -76,6 +85,7 @@ import {useMenuApi} from '/@/api/menu/index';
 
 // 引入组件
 const MenuDialog = defineAsyncComponent(() => import('/@/views/system/menu/dialog.vue'));
+const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
 
 
 const menuDialogRef = ref();
@@ -93,7 +103,7 @@ const state = reactive({
 const getTableData = async () => {
   state.tableData.loading = true;
   const menuApi = await useMenuApi();
-  await menuApi.getMenu().then(value => {
+  await menuApi.querymenuRouters().then(value => {
     state.tableData.data = value.data.children;
   });
   setTimeout(() => {

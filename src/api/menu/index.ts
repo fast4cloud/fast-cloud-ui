@@ -19,6 +19,13 @@ export function useMenuApi() {
 				params,
 			});
 		},
+		querymenuRouters: (params?: object) => {
+			return request({
+				url: request.adornUrl("fast-admin/fastadmin/sysmenu/QuerymenuRouters"),
+				method: 'get',
+				params,
+			});
+		},
 		save: (data: object) => {
 			return request({
 				url: request.adornUrl("fast-admin/fastadmin/sysmenu/save"),
