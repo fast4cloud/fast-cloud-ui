@@ -202,10 +202,10 @@ const openDialog = async (type: string, row) => {
       state.dataForm = data;
       state.dataForm.hasTop = data.hasTop+'';
     });
-    state.dialog.title = '修改字典';
+    state.dialog.title = '修改';
     state.dialog.submitTxt = '修 改';
   } else {
-    state.dialog.title = '新增字典';
+    state.dialog.title = '新增';
     state.dialog.submitTxt = '新 增';
     // 清空表单，此项需加表单验证才能使用
     // nextTick(() => {
