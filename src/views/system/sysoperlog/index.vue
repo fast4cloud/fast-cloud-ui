@@ -24,6 +24,7 @@
         <el-table-column prop="operName" label="操作人员" show-overflow-tooltip></el-table-column>
         <el-table-column prop="operUrl" label="请求URL" show-overflow-tooltip></el-table-column>
         <el-table-column prop="operIp" label="主机地址" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="loginLocation" label="归属地" show-overflow-tooltip></el-table-column>
         <el-table-column prop="operParam" label="请求参数" show-overflow-tooltip></el-table-column>
         <el-table-column prop="jsonResult" label="返回参数" show-overflow-tooltip></el-table-column>
         <el-table-column prop="status" label="操作状态" show-overflow-tooltip>
@@ -34,12 +35,7 @@
         <el-table-column prop="errorMsg" label="错误消息" show-overflow-tooltip></el-table-column>
         <el-table-column prop="operTime" label="操作时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="costTime" label="消耗时间(ms)" show-overflow-tooltip></el-table-column>
-        <el-table-column label="操作" width="150">
-          <template #default="scope">
-            <el-button size="small" :icon="Edit" text type="primary" @click="onOpenEditDic('edit', scope.row)">修改</el-button>
-            <el-button size="small" text :icon="Delete" type="danger" @click="onRowDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
+
       </el-table>
       <el-pagination
               @size-change="onHandleSizeChange"

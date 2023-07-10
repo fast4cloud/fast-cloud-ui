@@ -22,7 +22,11 @@
         <el-table-column prop="configName" label="参数名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="configKey" label="参数键名" show-overflow-tooltip></el-table-column>
         <el-table-column prop="configValue" label="参数键值" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="configType" label="系统内置" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="configType" label="系统内置" show-overflow-tooltip>
+          <template #default="scope">
+            <dict-tag dictType="sys_default" :value="scope.row.configType"/>
+          </template>
+        </el-table-column>
         <el-table-column prop="createBy" label="创建者" show-overflow-tooltip></el-table-column>
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="remark" label="备注" show-overflow-tooltip></el-table-column>
@@ -61,6 +65,7 @@
   import {sysconfigApi} from '/@/api/SysConfig';
   // 引入组件
   const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysconfig/dialog.vue'));
+  const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
 
   // 定义变量内容
   const dicDialogRef = ref();

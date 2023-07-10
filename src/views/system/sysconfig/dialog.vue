@@ -21,7 +21,14 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="系统内置" prop="configType">
-              <el-input v-model="state.dataForm.configType" placeholder="请输入系统内置（Y是 N否）" clearable></el-input>
+              <el-select v-model="state.dataForm.configType" class="m-2" placeholder="Select" size="large">
+                <el-option
+                    v-for="item in state.options"
+                    :key="item.dictValue"
+                    :label="item.dictLabel"
+                    :value="item.dictValue"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -48,7 +55,7 @@
   import type {FormInstance, FormRules} from 'element-plus'
   // 定义子组件向父组件传值/事件
   const emit = defineEmits(['refresh']);
-
+  import DictUtil from '/@/utils/DictUtil';
   // 定义变量内容
   const ruleFormRef = ref();
   const rules = reactive<FormRules>({
@@ -109,7 +116,7 @@
 ,
     remark:[
     {
-      required: true,
+      required: false,
       message: '备注不能为空!',
       trigger: 'blur',
     }
@@ -141,12 +148,17 @@
       title: '',
       submitTxt: '',
     },
+    options:[],
     type: "",
   });
 
   // 打开弹窗
   const openDialog = async (type: string, row) => {
     state.type = type;
+    let dict = new DictUtil();
+    await dict.getDictByType("sys_default").then(value => {
+      state.options=value;
+    });
     if (type === 'edit') {
       const dic = await sysconfigApi();
       await dic.info({id: row.id}).then(value => {
