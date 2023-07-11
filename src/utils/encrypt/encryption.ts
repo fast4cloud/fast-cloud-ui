@@ -1,4 +1,4 @@
-import { SM4Util } from 'sm4util'
+import { SM4Util } from '/@/utils/encrypt/sm4'
 import {sm2} from 'sm-crypto';
 const publicKey = '0426cd4b6f5c7bc770cdef5131cd660a5bc65694a7a85a9269461fae7fe9034ba2fa652b235aacfa6b9b0a2734c36d055f25d6d5731dce38ab6d4d7c3223039607'
 const encryption = {
