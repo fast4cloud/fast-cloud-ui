@@ -38,7 +38,7 @@ const request = {
         let decData = "";
         if (noEncrypt=='true') {
             decData = await encryption.decryptDesCbc(data, key)
-            console.log("解密后的值,e" + decData)
+           // console.log("解密后的值,e" + decData)
             try {
                 return JSON.parse(decData)
             } catch (e) {

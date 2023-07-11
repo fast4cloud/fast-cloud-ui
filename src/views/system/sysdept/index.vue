@@ -26,11 +26,7 @@
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column prop="deptName" label="部门名称" show-overflow-tooltip></el-table-column>
-        <el-table-column label="排序" show-overflow-tooltip width="80">
-          <template #default="scope">
-            {{ scope.$index }}
-          </template>
-        </el-table-column>
+
         <el-table-column prop="leader" label="负责人" show-overflow-tooltip></el-table-column>
         <el-table-column prop="phone" label="联系电话" show-overflow-tooltip></el-table-column>
         <el-table-column prop="leader" label="负责人" show-overflow-tooltip></el-table-column>
@@ -38,6 +34,11 @@
         <el-table-column prop="status" label="部门状态" show-overflow-tooltip>
           <template #default="scope">
             <dict-tag dictType="sys_dept_status" :value="scope.row.status"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="排序" show-overflow-tooltip width="80">
+          <template #default="scope">
+            {{ scope.$index }}
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
