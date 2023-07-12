@@ -1,24 +1,44 @@
 <template>
   <div class="system-dic-container layout-padding layout-content">
     <el-row>
-      
+
     </el-row>
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-input v-model="state.tableData.param.data.userName" size="default" placeholder="请输入用户名称"
-                  style="max-width: 180px"></el-input>
-        <el-button size="default" type="primary" class="ml10" @click="getTableData">
-          <el-icon>
-            <ele-Search/>
-          </el-icon>
-          查询
-        </el-button>
-        <el-button size="default" type="success" class="ml10" @click="onOpenAddDic('add')">
-          <el-icon>
-            <ele-FolderAdd/>
-          </el-icon>
-          新增
-        </el-button>
+        <el-form :model="state.tableData.param.data"  size="small" :inline="true" label-width="90px">
+          <el-form-item size="default"  label="用户名称" prop="userName">
+            <el-input  clearable v-model="state.tableData.param.data.userName" placeholder="请输入用户名称"
+                      ></el-input>
+          </el-form-item>
+          <el-form-item size="default"  label="状态" prop="status" >
+            <el-select size="default"  v-model="state.tableData.param.data.status" clearable  placeholder="Select" >
+              <el-option
+                  v-for="item in state.sysUserStatusList"
+                  :key="item.dictValue"
+                  :label="item.dictLabel"
+                  :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item >
+          <el-button size="default" type="primary" class="ml10" @click="getTableData">
+            <el-icon>
+              <ele-Search/>
+            </el-icon>
+            查询
+          </el-button>
+          </el-form-item>
+          <el-form-item >
+            <el-button size="default" type="success" class="ml10" @click="onOpenAddDic('add')">
+              <el-icon>
+                <ele-FolderAdd/>
+              </el-icon>
+              新增
+            </el-button>
+          </el-form-item>
+
+        </el-form>
+
       </div>
 
       <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
@@ -84,6 +104,9 @@ import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
 import {ElMessageBox, ElMessage} from 'element-plus';
 import {sysuserApi} from '/@/api/SysUser';
 import {useMenuApi} from "/@/api/menu";
+import DictUtil from "/@/utils/DictUtil";
+import {sysdeptApi} from "/@/api/SysDept";
+import {sysroleApi} from "/@/api/SysRole";
 // 引入组件
 const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysuser/dialog.vue'));
 const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
@@ -96,6 +119,7 @@ const state = reactive({
     label: 'menuName',
   },
   roleMenuIds: [],
+  sysUserStatusList: [],
   tableData: {
     data: [],
     total: 0,
@@ -105,20 +129,24 @@ const state = reactive({
       pageSize: 10,
       data: {
         userName: "",
+        status:''
       }
     },
   },
 });
-const getMenuData = async () => {
-  const menuApi = await useMenuApi();
-  await menuApi.getMenu().then(value => {
-    state.menuData = value.data.children;
+const initSelect = async () => {
+  let dict = new DictUtil();
+  await dict.getDictByType("sys_user_status").then(value => {
+    state.sysUserStatusList = value;
   });
+
 }
 // 初始化表格数据
 const getTableData = async () => {
+
   state.tableData.loading = true;
-  getMenuData();
+  //getMenuData();
+  await initSelect();
   const dic = await sysuserApi();
   await dic.queryPage(state.tableData.param).then(data => {
     // debugger
