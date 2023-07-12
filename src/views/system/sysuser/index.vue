@@ -5,7 +5,7 @@
     </el-row>
     <el-card shadow="hover" class="layout-padding-auto">
       <div class="system-user-search mb15">
-        <el-form :model="state.tableData.param.data"  size="small" :inline="true" label-width="90px">
+        <el-form :model="state.tableData.param.data"  size="small" :inline="true" >
           <el-form-item size="default"  label="用户名称" prop="userName">
             <el-input  clearable v-model="state.tableData.param.data.userName" placeholder="请输入用户名称"
                       ></el-input>
