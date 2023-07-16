@@ -1187,7 +1187,15 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
  * 定义常规的界面
  */
 export const conventionAndNoPower = [
-
+	{
+		path: '/',
+		name: '/home',
+		component: () => import('/@/views/home/index.vue'),
+		meta: {
+			title: '字典数据',
+			isHide: true,
+		},
+	},
 	{
 		path: '/dictdata',
 		name: 'dictdata',
