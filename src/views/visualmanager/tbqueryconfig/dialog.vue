@@ -58,6 +58,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="是否开启" prop="sysType">
+          <el-select v-model="state.dataForm.status" class="m-2" placeholder="Select" size="large">
+            <el-option
+                v-for="item in state.commonStatus"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+            />
+          </el-select>
+        </el-form-item>
 
         <el-form-item label="备注" prop="remark">
           <el-input type="textarea" :rows="3" style="width: 90%" maxlength="200" v-model="state.dataForm.remark" placeholder="请输入备注"
@@ -188,8 +198,8 @@ const state = reactive({
     ,
     sysType: '0' // 归属系统0,未知系统
     ,
-    remark: '' // 备注
-    ,
+    remark: '', // 备注
+    status: '0' // 0正常1停用
   },
   dialog: {
     isShowDialog: false,
@@ -202,6 +212,7 @@ const state = reactive({
   sysTypes: [],
   sysParamTypes: [],
   dataSources: [],
+  commonStatus:[]
 });
 const initSelect = async () => {
   let dict = new DictUtil();
@@ -217,7 +228,9 @@ const initSelect = async () => {
   await dict.getDictByType("data_source").then(value => {
     state.dataSources = value;
   });
-
+  await dict.getDictByType("sys_common_status").then(value => {
+    state.commonStatus = value;
+  });
 }
 // 打开弹窗
 const openDialog = async (type: string, row) => {
@@ -266,7 +279,8 @@ const clearData = () => {
     ,
     sysType: '0' // 归属系统0,未知系统
     ,
-    remark: '' // 备注
+    remark: '', // 备注
+    status: '0' // 0正常1停用
     ,
   };
 }

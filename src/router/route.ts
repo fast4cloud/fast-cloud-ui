@@ -1205,6 +1205,15 @@ export const conventionAndNoPower = [
 			isHide: true,
 		},
 	},
+	{
+		path: '/tbquerycondition',
+		name: 'tbquerycondition',
+		component: () => import('/@/views/visualmanager/tbquerycondition/index.vue'),
+		meta: {
+			title: '查询值域',
+			isHide: true,
+		},
+	},
 ];
 /**
  * 定义404、401界面
