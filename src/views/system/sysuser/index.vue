@@ -36,7 +36,14 @@
               新增
             </el-button>
           </el-form-item>
-
+          <el-form-item>
+            <el-button size="default" type="danger" class="ml10" @click="onExport('export')">
+              <el-icon>
+                <ele-Download/>
+              </el-icon>
+              导出
+            </el-button>
+          </el-form-item>
         </el-form>
 
       </div>
@@ -107,6 +114,7 @@ import {useMenuApi} from "/@/api/menu";
 import DictUtil from "/@/utils/DictUtil";
 import {sysdeptApi} from "/@/api/SysDept";
 import {sysroleApi} from "/@/api/SysRole";
+import {tbqueryconfigApi} from "/@/api/TbQueryConfig";
 // 引入组件
 const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysuser/dialog.vue'));
 const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
@@ -134,6 +142,20 @@ const state = reactive({
     },
   },
 });
+const onExport = async () => {
+  //导出
+  const dic = await sysuserApi();
+  let url = await dic.export()
+  let dataFrom = state.tableData.param.data;
+  let param = '?';
+  for (const key in dataFrom) {
+    let dataKey = key + "=" + dataFrom[key] + "&";
+    param = param + dataKey;
+    // console.log(key)
+  }
+  window.open(url + param, "_blank");
+
+}
 const initSelect = async () => {
   let dict = new DictUtil();
   await dict.getDictByType("sys_user_status").then(value => {

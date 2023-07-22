@@ -22,6 +22,14 @@
             新增
           </el-button>
         </el-form-item>
+          <el-form-item>
+            <el-button size="default" type="danger" class="ml10" @click="onExport('export')">
+              <el-icon>
+                <ele-Download/>
+              </el-icon>
+              导出
+            </el-button>
+          </el-form-item>
        </el-form>
       </div>
       <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
@@ -80,6 +88,7 @@
   import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
   import {ElMessageBox, ElMessage} from 'element-plus';
   import {sysnoticeApi} from '/@/api/SysNotice';
+  import {sysuserApi} from "/@/api/SysUser";
   // 引入组件
   const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysnotice/dialog.vue'));
   const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
@@ -114,6 +123,20 @@
     })
 
   };
+  const onExport = async () => {
+    //导出
+    const dic = await sysnoticeApi();
+    let url = await dic.export()
+    let dataFrom = state.tableData.param.data;
+    let param = '?';
+    for (const key in dataFrom) {
+      let dataKey = key + "=" + dataFrom[key] + "&";
+      param = param + dataKey;
+      // console.log(key)
+    }
+    window.open(url + param, "_blank");
+
+  }
   // 打开新增弹窗
   const onOpenAddDic = (type: string) => {
     dicDialogRef.value.openDialog(type);
