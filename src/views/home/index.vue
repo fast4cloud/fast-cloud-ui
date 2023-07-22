@@ -517,9 +517,9 @@ onMounted(() => {
   }
   menuApi.testData(json).then(value => {
 
-    console.log("数据")
+   // console.log("数据")
 
-    console.log(value)
+   // console.log(value)
   });
   initEchartsResize();
 });

@@ -52,6 +52,13 @@ export function tbqueryconfigApi() {
         method: 'post',
         data,
       });
+    },
+    /**
+     * 导出
+     * @param data
+     */
+    export: () => {
+      return request.adornUrl('fast-admin/fastadmin/tbqueryconfig/export')
     }
   };
 }

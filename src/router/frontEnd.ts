@@ -89,7 +89,7 @@ export async function setFilterRouteEnd() {
     // 关联问题 No match found for location with path 'xxx'
 
     //return await filterRouteEnd;
-    console.log(JSON.stringify(dynamicRoutes))
+   // console.log(JSON.stringify(dynamicRoutes))
     return await dynamicRoutes;
 }
 

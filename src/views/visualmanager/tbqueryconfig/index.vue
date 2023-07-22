@@ -4,10 +4,11 @@
       <div class="system-user-search mb15">
         <el-form :model="state.tableData.param.data" size="small" :inline="true">
           <el-form-item size="default" label="查询编码" prop="configCode">
-            <el-input size="default" v-model="state.tableData.param.data.configCode" placeholder="请输入查询编码" style="max-width: 180px"></el-input>
+            <el-input size="default" v-model="state.tableData.param.data.configCode" placeholder="请输入查询编码"
+                      style="max-width: 180px"></el-input>
           </el-form-item>
-          <el-form-item size="default"  label="归属系统" prop="sysType">
-            <el-select v-model="state.tableData.param.data.sysType"  placeholder="Select" size="large">
+          <el-form-item size="default" label="归属系统" prop="sysType">
+            <el-select v-model="state.tableData.param.data.sysType" placeholder="Select" size="large">
               <el-option
                   v-for="item in state.sysTypes"
                   :key="item.dictValue"
@@ -30,6 +31,14 @@
                 <ele-FolderAdd/>
               </el-icon>
               新增
+            </el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="default" type="danger" class="ml10" @click="onExport('export')">
+              <el-icon>
+                <ele-Download/>
+              </el-icon>
+              导出
             </el-button>
           </el-form-item>
         </el-form>
@@ -103,7 +112,7 @@ import {
 import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
 import {ElMessageBox, ElMessage} from 'element-plus';
 import {tbqueryconfigApi} from '/@/api/TbQueryConfig';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 import DictUtil from "/@/utils/DictUtil";
 
 // 定义变量内容
@@ -124,11 +133,11 @@ const state = reactive({
       pageSize: 10,
       data: {
         configCode: '',
-        sysType:''
+        sysType: ''
       }
     },
   },
-  sysTypes:[],
+  sysTypes: [],
 });
 const initSelect = async () => {
   let dict = new DictUtil();
@@ -154,6 +163,20 @@ const getTableData = async () => {
 const onOpenAddDic = (type: string) => {
   dicDialogRef.value.openDialog(type);
 };
+const onExport = async () => {
+  //导出
+  const dic = await tbqueryconfigApi();
+  let url = await dic.export()
+  let dataFrom = state.tableData.param.data;
+  let param = '?';
+  for (const key in dataFrom) {
+    let dataKey = key + "=" + dataFrom[key] + "&";
+    param = param + dataKey;
+    // console.log(key)
+  }
+  window.open(url + param, "_blank");
+
+}
 // 打开修改弹窗
 const onOpenEditDic = (type: string, row) => {
   dicDialogRef.value.openDialog(type, row);
@@ -162,11 +185,11 @@ const onCondition = (type: string, row) => {
   ConditionRef.value.openDialog(type, row);
 };
 const itemClick = (row) => {
-    //跳转解密
+  //跳转解密
   router.push({
     path: '/tbquerycondition',
     query: {
-      configCode:row.configCode
+      configCode: row.configCode
     },
   });
 }
