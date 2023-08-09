@@ -57,8 +57,14 @@ export function tbqueryconfigApi() {
      * 导出
      * @param data
      */
-    export: () => {
-      return request.adornUrl('fast-admin/fastadmin/tbqueryconfig/export')
+    export: (data) => {
+     // return request.adornUrl('fast-admin/fastadmin/tbqueryconfig/export')
+      return request({
+        url: request.adornUrl('fast-admin/fastadmin/tbqueryconfig/export'),
+        method: 'post',
+        responseType: 'blob',
+        data,
+      });
     }
   };
 }

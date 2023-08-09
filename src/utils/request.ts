@@ -58,6 +58,7 @@ service.interceptors.response.use(
         // 对响应数据做点什么
         const res = response.data;
         let method = response.config.method;
+        const url = response.config.url
         if (res.code === '401') {
             // `token` 过期或者账号已在别处登录
             if (res.code === 401 || res.code === 4001) {
@@ -70,6 +71,9 @@ service.interceptors.response.use(
                     });
             }
             return Promise.reject(service.interceptors.response);
+        } else if (url.indexOf('export') !== -1) {
+            // 说明是导出功能,直接返回流
+            return res
         } else if (res.code !== '200') {
             ElMessage({
                 message: res.message || 'Error',
@@ -82,8 +86,8 @@ service.interceptors.response.use(
                 return res;
             }
             let content = await requestUtil.decryptData(res.data, response.config.rkey);
-            res.data=content;
-           return res;
+            res.data = content;
+            return res;
         }
     },
     (error) => {

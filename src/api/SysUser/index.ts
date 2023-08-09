@@ -57,8 +57,14 @@ export function sysuserApi() {
      * 导出
      * @param data
      */
-    export: () => {
-      return request.adornUrl('fast-admin/fastadmin/sysuser/export')
+    export: (data) => {
+     // return request.adornUrl('fast-admin/fastadmin/sysuser/export')
+      return request({
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/export'),
+        method: 'post',
+        data,
+        responseType: 'blob',
+      });
     }
   };
 }

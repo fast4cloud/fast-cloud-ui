@@ -115,6 +115,8 @@ import DictUtil from "/@/utils/DictUtil";
 import {sysdeptApi} from "/@/api/SysDept";
 import {sysroleApi} from "/@/api/SysRole";
 import {tbqueryconfigApi} from "/@/api/TbQueryConfig";
+import commonFunction from '/@/utils/commonFunction';
+const { download } = commonFunction();
 // 引入组件
 const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysuser/dialog.vue'));
 const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
@@ -143,18 +145,10 @@ const state = reactive({
   },
 });
 const onExport = async () => {
-  //导出
   const dic = await sysuserApi();
-  let url = await dic.export()
-  let dataFrom = state.tableData.param.data;
-  let param = '?';
-  for (const key in dataFrom) {
-    let dataKey = key + "=" + dataFrom[key] + "&";
-    param = param + dataKey;
-    // console.log(key)
-  }
-  window.open(url + param, "_blank");
-
+  await dic.export( state.tableData.param.data).then(value => {
+    download(value,"用户基本信息.xlsx");
+  })
 }
 const initSelect = async () => {
   let dict = new DictUtil();

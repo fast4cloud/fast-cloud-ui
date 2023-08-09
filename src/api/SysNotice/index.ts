@@ -57,8 +57,14 @@ export function sysnoticeApi() {
      * 导出
      * @param data
      */
-    export: () => {
-      return request.adornUrl('fast-admin/fastadmin/sysnotice/export')
+    export: (data) => {
+    //   return request.adornUrl('fast-admin/fastadmin/sysnotice/export')
+      return request({
+        url: request.adornUrl('fast-admin/fastadmin/sysnotice/export'),
+        method: 'post',
+        responseType: 'blob',
+        data,
+      });
     }
   };
 }

@@ -114,7 +114,8 @@ import {ElMessageBox, ElMessage} from 'element-plus';
 import {tbqueryconfigApi} from '/@/api/TbQueryConfig';
 import {useRouter} from 'vue-router';
 import DictUtil from "/@/utils/DictUtil";
-
+import commonFunction from '/@/utils/commonFunction';
+const { download } = commonFunction();
 // 定义变量内容
 const router = useRouter();
 // 引入组件
@@ -166,15 +167,17 @@ const onOpenAddDic = (type: string) => {
 const onExport = async () => {
   //导出
   const dic = await tbqueryconfigApi();
-  let url = await dic.export()
-  let dataFrom = state.tableData.param.data;
-  let param = '?';
-  for (const key in dataFrom) {
-    let dataKey = key + "=" + dataFrom[key] + "&";
-    param = param + dataKey;
-    // console.log(key)
-  }
-  window.open(url + param, "_blank");
+  await dic.export( state.tableData.param.data).then(value => {
+    download(value,"查询配置.xlsx");
+  })
+  // let dataFrom = state.tableData.param.data;
+  // let param = '?';
+  // for (const key in dataFrom) {
+  //   let dataKey = key + "=" + dataFrom[key] + "&";
+  //   param = param + dataKey;
+  //   // console.log(key)
+  // }
+ // window.open(url + param, "_blank");
 
 }
 // 打开修改弹窗

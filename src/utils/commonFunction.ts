@@ -3,7 +3,7 @@ import useClipboard from 'vue-clipboard3';
 import { ElMessage } from 'element-plus';
 import { formatDate } from '/@/utils/formatTime';
 import { useI18n } from 'vue-i18n';
-
+import { saveAs } from 'file-saver'
 export default function () {
 	const { t } = useI18n();
 	const { toClipboard } = useClipboard();
@@ -38,6 +38,12 @@ export default function () {
 	const scale2Format = (value: string = '0') => {
 		return Number.parseFloat(value).toFixed(2);
 	};
+	// fileName 保存文件的名称，需要带后缀
+	const download=(fileStream, fileName)=> {
+		const blob = new Blob([fileStream])		// fileStream 是文件流，一般从后台获取
+		const url = window.URL.createObjectURL(blob)
+		saveAs(url, fileName)					// fileName 保存文件的名称，需要带后缀
+	}
 	// 点击复制文本
 	const copyText = (text: string) => {
 		return new Promise((resolve, reject) => {
@@ -62,5 +68,6 @@ export default function () {
 		scaleFormat,
 		scale2Format,
 		copyText,
+		download
 	};
 }

@@ -88,7 +88,8 @@
   import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
   import {ElMessageBox, ElMessage} from 'element-plus';
   import {sysnoticeApi} from '/@/api/SysNotice';
-  import {sysuserApi} from "/@/api/SysUser";
+  import commonFunction from '/@/utils/commonFunction';
+  const { download } = commonFunction();
   // 引入组件
   const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysnotice/dialog.vue'));
   const DictTag = defineAsyncComponent(() => import('/@/components/DictTag/index.vue'));
@@ -124,18 +125,10 @@
 
   };
   const onExport = async () => {
-    //导出
     const dic = await sysnoticeApi();
-    let url = await dic.export()
-    let dataFrom = state.tableData.param.data;
-    let param = '?';
-    for (const key in dataFrom) {
-      let dataKey = key + "=" + dataFrom[key] + "&";
-      param = param + dataKey;
-      // console.log(key)
-    }
-    window.open(url + param, "_blank");
-
+    await dic.export( state.tableData.param.data).then(value => {
+      download(value,"通知.xlsx");
+    })
   }
   // 打开新增弹窗
   const onOpenAddDic = (type: string) => {
