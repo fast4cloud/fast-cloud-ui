@@ -66,7 +66,7 @@ const state = reactive({
 		loading: false,
 		param: {
 			pageNum: 1,
-			pageSize: 10,
+			pageSize: 5,
 		},
 	},
 });

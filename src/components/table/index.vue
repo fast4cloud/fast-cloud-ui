@@ -152,7 +152,7 @@ const { themeConfig } = storeToRefs(storesThemeConfig);
 const state = reactive({
 	page: {
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 5,
 	},
 	selectlist: [] as EmptyObjectType[],
 	checkListAll: true,

@@ -103,7 +103,7 @@
       loading: false,
       param: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 5,
         data:{
           noticeTitle:''
         }

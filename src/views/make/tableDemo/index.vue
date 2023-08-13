@@ -69,7 +69,7 @@ const state = reactive<TableDemoState>({
 		// 搜索参数（不用传，用于分页、搜索时传给后台的值，`getTableData` 中使用）
 		param: {
 			pageNum: 1,
-			pageSize: 10,
+			pageSize: 5,
 		},
 		// 打印标题
 		printName: 'vueNextAdmin 表格打印演示',
