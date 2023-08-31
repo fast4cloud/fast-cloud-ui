@@ -8,20 +8,40 @@ import request from '/@/utils/request';
  * @method signOut 用户退出登录
  */
 export function useLoginApi() {
-	return {
-		signIn: (data: object) => {
-			return request({
-				url: '/user/signIn',
-				method: 'post',
-				data,
-			});
-		},
-		signOut: (data: object) => {
-			return request({
-				url: '/user/signOut',
-				method: 'post',
-				data,
-			});
-		},
-	};
+    return {
+        LoginMode: (data: object) => {
+            return request({
+                url: request.adornUrl("fast-user/user/LoginMode"),
+                method: 'post',
+                data,
+            });
+        }, signIn: (data: object) => {
+            return request({
+                url: request.adornUrl("fast-user/user/login"),
+                method: 'post',
+                data,
+            });
+        },
+        signOut: (data: object) => {
+            return request({
+                url: request.adornUrl("fast-user/user/loginOut"),
+                method: 'post',
+                data,
+            });
+        },
+        userInfo: (data: object) => {
+            return request({
+                url: request.adornUrl("fast-user/user/getUserInfo"),
+                method: 'post',
+                data,
+            });
+        },
+        getCaptcha: () => {
+            return request({
+                url: request.adornUrl("fast-user/user/getCaptcha"),
+                method: 'get',
+            });
+
+        },
+    };
 }

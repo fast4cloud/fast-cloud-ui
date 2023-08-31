@@ -85,7 +85,7 @@
 		"element-ui",
 		"element-plus",
 		" fast-cloud-ui",
-		"next-admin"
+		"fast-cloud-ui"
 	],
 	"repository": {
 		"type": "git",

@@ -26,7 +26,7 @@ service.interceptors.request.use(
     (config) => {
         // 在发送请求之前做些什么 token
         config.headers['token'] = Cookies.get('token')
-        config.headers['appId'] = Cookies.get('token')
+        config.headers['appId'] = import.meta.env.VITE_SSO_APP_ID;
         if (Session.get('token')) {
             config.headers!['Authorization'] = `${Session.get('token')}`;
         }

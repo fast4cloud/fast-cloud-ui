@@ -72,7 +72,7 @@ const state = reactive<TableDemoState>({
 			pageSize: 5,
 		},
 		// 打印标题
-		printName: 'vueNextAdmin 表格打印演示',
+		printName: 'fast-cloud-ui 表格打印演示',
 	},
 });
 
