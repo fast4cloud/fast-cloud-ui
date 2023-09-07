@@ -79,6 +79,7 @@
             <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
               <el-form-item label="权限标识">
                 <el-input v-model="state.ruleForm.permission" placeholder="请输入权限标识" clearable></el-input>
+                <el-text class="mx-5" type="primary">控制器中定义的权限标识:xxx:xxx:list</el-text>
               </el-form-item>
             </el-col>
           </template>
