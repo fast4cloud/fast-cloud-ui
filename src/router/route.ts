@@ -1188,11 +1188,11 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
  */
 export const conventionAndNoPower = [
 	{
-		path: '/',
+		path: '/home',
 		name: '/home',
 		component: () => import('/@/views/home/index.vue'),
 		meta: {
-			title: '字典数据',
+			title: '首页',
 			isHide: true,
 		},
 	},

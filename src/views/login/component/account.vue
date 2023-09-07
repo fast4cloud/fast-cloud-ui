@@ -68,7 +68,6 @@ import {reactive, computed, onMounted} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
 import {useI18n} from 'vue-i18n';
-import Cookies from 'js-cookie';
 import {storeToRefs} from 'pinia';
 import {useThemeConfig} from '/@/stores/themeConfig';
 import {initFrontEndControlRoutes} from '/@/router/frontEnd';
@@ -98,13 +97,13 @@ const state = reactive({
 });
 const refreshClick = () => {
   loginApi.getCaptcha().then(value => {
-    state.captchaUrl =value.data.base64Img
+    state.captchaUrl = value.data.base64Img
   });
 }
 onMounted(() => {
-   loginApi.getCaptcha().then(value => {
-     state.captchaUrl =value.data.base64Img
-   });
+  loginApi.getCaptcha().then(value => {
+    state.captchaUrl = value.data.base64Img
+  });
 });
 // 时间获取
 const currentTime = computed(() => {
@@ -114,24 +113,31 @@ const currentTime = computed(() => {
 const onSignIn = async () => {
   state.loading.signIn = true;
   // 存储 token 到浏览器缓存
- await loginApi.signIn(state.ruleForm).then(async value => {
-   Session.set('token', value.data.token);
-   Session.set('ssoType', value.data.ssoType);
-   ElMessage.success(value.message);
-   if (!themeConfig.value.isRequestRoutes) {
-     // 前端控制路由，2、请注意执行顺序
-     const isNoPower = await initFrontEndControlRoutes();
-     signInSuccess(isNoPower);
-   } else {
-     // 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
-     // 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
-     const isNoPower = await initBackEndControlRoutes();
-     // 执行完 initBackEndControlRoutes，再执行 signInSuccess
-     signInSuccess(isNoPower);
-   }
- }).catch(()=>{
-   state.loading.signIn = false;
- })
+  await loginApi.signIn(state.ruleForm).then(async value => {
+    if(value.code!='200'){
+      // 异常则刷新验证码
+      refreshClick();
+      return
+    }
+    Session.set('token', value.data.token);
+    Session.set('ssoType', value.data.ssoType);
+    ElMessage.success(value.message);
+    if (!themeConfig.value.isRequestRoutes) {
+      // 前端控制路由，2、请注意执行顺序
+      const isNoPower = await initFrontEndControlRoutes();
+      signInSuccess(isNoPower);
+    } else {
+      // 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
+      // 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
+      const isNoPower = await initBackEndControlRoutes();
+      // 执行完 initBackEndControlRoutes，再执行 signInSuccess
+      signInSuccess(isNoPower);
+    }
+  }).catch(() => {
+    state.loading.signIn = false;
+    // 异常则刷新验证码
+    refreshClick();
+  })
   // Session.set('token', Math.random().toString(36).substr(0));
   // // 模拟数据，对接接口时，记得删除多余代码及对应依赖的引入。用于 `/src/stores/userInfo.ts` 中不同用户登录判断（模拟数据）
   // Cookies.set('userName', state.ruleForm.userName);

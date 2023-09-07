@@ -20,9 +20,9 @@
               <el-select v-model="state.dataForm.roleId" placeholder="请选择" clearable class="w100">
                 <el-option
                     v-for="item in state.roleList"
-                    :key="item.id"
+                    :key="item.id+''"
                     :label="item.roleName"
-                    :value="item.id"
+                    :value="item.id+''"
                 />
               </el-select>
             </el-form-item>
@@ -305,7 +305,7 @@ const initSelect = async () => {
   })
   const roleApi = await sysroleApi();
   await roleApi.queryList({}).then(data => {
-    // debugger
+    debugger
     // const dataList = data.data.children;
     state.roleList = data.data;
   })

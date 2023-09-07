@@ -9,7 +9,7 @@ import {dict} from '/@/stores/dict';
 import {useTagsViewRoutes} from '/@/stores/tagsViewRoutes';
 import {useRoutesList} from '/@/stores/routesList';
 import {NextLoading} from '/@/utils/loading';
-import {useMenuApi} from '/@/api/menu/index';
+import UserSdk from '/@/api/sdk/UserSdk';
 import {dicApi} from '/@/api/dic/index';
 import Layout from '/@/layout'
 
@@ -29,10 +29,10 @@ export async function initFrontEndControlRoutes() {
     if (!Session.get('token')) return false;
     // 触发初始化用户信息 pinia
     // https://gitee.com/lyt-top/ fast-cloud-ui/issues/I5F1HP
-    await useUserInfo(pinia).setUserInfos();
+  //  await useUserInfo(pinia).setUserInfos();
     // 无登录权限时，添加判断
     // https://gitee.com/lyt-top/ fast-cloud-ui/issues/I64HVO
-    if (useUserInfo().userInfos.roles.length <= 0) return Promise.resolve(true);
+   //  if (useUserInfo().userInfos.roles.length <= 0) return Promise.resolve(true);
     // 添加动态路由
     await setAddRoute();
     //加载字典
@@ -74,10 +74,10 @@ export async function setAddRoute() {
  * @returns 返回替换后的路由数组
  */
 export async function setFilterRouteEnd() {
-    const menuApi = await useMenuApi();
-    await menuApi.getMenu().then(value => {
+    const menuApi = await new UserSdk();
+    await menuApi.getUserInfo().then(value => {
         let list = [];
-        treeMenu(value.data.children, list);
+        treeMenu(value.menuInfo.children, list);
         list = [...list, ...notFoundAndNoPower, ...conventionAndNoPower];
         dynamicRoutes[0].children = list
     });
@@ -104,7 +104,8 @@ export async function treeMenu(menuList: any, list: any) {
                 id: menu.id,
                 parentId: menu.parentId,
                 component: () => import('/@/layout/routerView/parent.vue'),
-                "redirect": "/system/menu",
+                // 跳转到首页
+                "redirect": "/home",
                 meta: {
                     title: menu.menuName,
                     //isLink: "",
