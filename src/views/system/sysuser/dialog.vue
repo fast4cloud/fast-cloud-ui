@@ -305,7 +305,6 @@ const initSelect = async () => {
   })
   const roleApi = await sysroleApi();
   await roleApi.queryList({}).then(data => {
-    debugger
     // const dataList = data.data.children;
     state.roleList = data.data;
   })

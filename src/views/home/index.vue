@@ -515,12 +515,7 @@ onMounted(() => {
     "createBy": "",
     "updateB": ""
   }
-  menuApi.testData(json).then(value => {
 
-   // console.log("数据")
-
-   // console.log(value)
-  });
   initEchartsResize();
 });
 // 由于页面缓存原因，keep-alive

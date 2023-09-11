@@ -20,6 +20,13 @@ export function sysuserApi() {
         data,
       });
     },
+    getUserInfo: (data: object) => {
+      return request({
+        url: request.adornUrl('fast-admin/fastadmin/sysuser/getUserInfo'),
+        method: 'post',
+        data,
+      });
+    },
     /**
      * 添加
      * @param data

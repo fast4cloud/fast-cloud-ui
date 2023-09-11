@@ -118,7 +118,7 @@ export async function treeMenu(menuList: any, list: any) {
                 }
             }
             list.push(json)
-        } else {
+        } else if(menu.menuType === '1') {
             // debugger
             let json = {
                 //说明是目录
