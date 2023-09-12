@@ -6,8 +6,8 @@
         <el-card shadow="hover" header="个人信息">
           <div class="personal-user">
             <div class="personal-user-left">
-              <el-upload class="h100 personal-user-left-upload" action="https://jsonplaceholder.typicode.com/posts/"
-                         multiple :limit="1">
+              <el-upload :headers="state.uploadHeads" class="avatar-uploader" :action="state.uploadUrl"
+                          multiple :limit="1" :on-success="onSuccess" :auto-upload="true">
                 <el-avatar :size="100"
                            :src="state.userInfo.avatar"/>
               </el-upload>
@@ -16,7 +16,7 @@
               <el-row>
                 <el-col :span="24" class="personal-title mb18">{{
                     currentTime
-                  }},{{ state.userInfo.nickName }},{{state.userInfo.remark}}
+                  }},{{ state.userInfo.nickName }},{{ state.userInfo.remark }}
                 </el-col>
                 <el-col :span="24">
                   <el-row>
@@ -58,7 +58,7 @@
           <div class="personal-info-box">
             <ul class="personal-info-ul">
               <li v-for="(v, k) in state.noticeList" :key="k" class="personal-info-li">
-                <a  target="_block" class="personal-info-li-title">
+                <a target="_block" class="personal-info-li-title">
                   <router-link :to="'/sysnotice?id=' + v.id" class="link-type">
                     <span>{{ v.noticeTitle }}</span>
                   </router-link>
@@ -218,20 +218,27 @@ import DictUtil from '/@/utils/DictUtil';
 import {ElMessage} from "element-plus";
 import {sysnoticeApi} from '/@/api/SysNotice';
 import {sysdeptApi} from "/@/api/SysDept";
-
+import {uploadApi} from "/@/api/upload";
+import Cookies from "js-cookie";
 const stores = useUserInfo();
 const {userInfos} = storeToRefs(stores);
 // const userInfo = userInfos.value.userInfo;
 const roleInfo = userInfos.value.roleInfo;
 const userApi = new sysuserApi();
 // 定义变量内容
+const upload = new uploadApi();
 const state = reactive({
   newsInfoList,
   recommendList,
   userInfo: {},
   sysSexList: [],
-  noticeList:[],
-  deptData:[],
+  noticeList: [],
+  deptData: [],
+  uploadUrl: upload.upload(),
+  uploadHeads:{
+    token:Cookies.get('token'),
+    appId: import.meta.env.VITE_SSO_APP_ID
+  },
   personalForm: {
     name: '',
     email: '',
@@ -264,6 +271,10 @@ const updateClick = () => {
     close();
   })
 }
+const onSuccess = (file) => {
+  state.userInfo.avatar=file.data.imagePath
+}
+
 const getUserInfo = async () => {
   userApi.getUserInfo({}).then(value => {
     if (value.code != 200) {
@@ -394,7 +405,8 @@ const currentTime = computed(() => {
             color: var(--el-text-color-secondary);
             text-decoration: none;
           }
-          a{
+
+          a {
             color: var(--el-text-color-secondary);
             text-decoration: none;
           }
