@@ -43,12 +43,11 @@
 
 <script setup lang="ts" name="systemDic">
   import {
-    Delete,
-    Edit,
     Suitcase
   } from '@element-plus/icons-vue'
   import {defineAsyncComponent, reactive, onMounted, ref} from 'vue';
-  import {ElMessageBox, ElMessage} from 'element-plus';
+  import commonFunction from '/@/utils/commonFunction';
+  const { download } = commonFunction();
   import {sysgenApi} from '/@/api/sysgen';
   // 引入组件
   const DicDialog = defineAsyncComponent(() => import('/@/views/system/sysdatamask/dialog.vue'));
@@ -90,7 +89,9 @@
   const genTable = async (type: string, row) => {
     //导出
     const dic = await sysgenApi();
-    window.open(dic.genCode(row.tableName));
+    dic.genCode(row.tableName).then(value => {
+      download(value,"rest.zip");
+    })
 
   };
 

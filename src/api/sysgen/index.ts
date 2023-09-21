@@ -15,7 +15,13 @@ export function sysgenApi() {
             });
         },
         genCode: (data: object) => {
-            return request.adornUrl('fast-generator/sys/generator/code?tables='+data);
+            return request({
+                url: request.adornUrl('fast-generator/sys/generator/export?tables='+data),
+                method: 'get',
+                data,
+                responseType: 'blob',
+            });
+            // return request.adornUrl('fast-generator/sys/generator/code?tables='+data);
         },
 
     };

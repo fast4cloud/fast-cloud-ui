@@ -7,7 +7,7 @@
           <div class="personal-user">
             <div class="personal-user-left">
               <el-upload :headers="state.uploadHeads" class="avatar-uploader" :action="state.uploadUrl"
-                          multiple :limit="1" :on-success="onSuccess" :auto-upload="true">
+                           :limit="1" :on-success="onSuccess" :auto-upload="true">
                 <el-avatar :size="100"
                            :src="state.userInfo.avatar"/>
               </el-upload>
