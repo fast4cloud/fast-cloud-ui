@@ -61,7 +61,7 @@ service.interceptors.response.use(
         const url = response.config.url
         if (res.code === '401') {
             // `token` 过期或者账号已在别处登录
-            if (res.code === 401 || res.code === 4001) {
+            if (res.code === '401' || res.code === '4001') {
                 Session.clear(); // 清除浏览器全部临时缓存
                 window.location.href = '/'; // 去登录页
                 ElMessageBox.alert('你已被登出，请重新登录', '提示', {})

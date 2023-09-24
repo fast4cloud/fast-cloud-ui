@@ -47,7 +47,7 @@ import { defineAsyncComponent, onMounted, reactive, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import { NextLoading } from '/@/utils/loading';
-import logoMini from '/@/assets/logo-mini.svg';
+import logoMini from '/@/assets/logo.png';
 import loginMain from '/@/assets/login-main.svg';
 import loginBg from '/@/assets/login-bg.svg';
 
@@ -92,8 +92,7 @@ onMounted(() => {
 			z-index: 1;
 			animation: logoAnimation 0.3s ease;
 			img {
-				width: 52px;
-				height: 52px;
+				width: 100px;
 			}
 			.login-left-logo-text {
 				display: flex;
