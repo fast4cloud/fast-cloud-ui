@@ -165,7 +165,7 @@
         let data = value.data;
         state.dataForm = data;
       });
-      state.dialog.title = '修改字典';
+      state.dialog.title = '修改';
       state.dialog.submitTxt = '修 改';
     } else {
       state.dialog.title = '新增字典';
