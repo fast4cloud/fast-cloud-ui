@@ -1187,7 +1187,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
  * 定义常规的界面
  */
 export const conventionAndNoPower = [
-	{
+	/*{
 		path: '/home',
 		name: '/home',
 		component: () => import('/@/views/home/index.vue'),
@@ -1195,8 +1195,8 @@ export const conventionAndNoPower = [
 			title: '首页',
 			isHide: true,
 		},
-	},
-	{
+	},*/
+	/*{
 		path: '/dictdata',
 		name: 'dictdata',
 		component: () => import('/@/views/system/dictdata/index.vue'),
@@ -1213,7 +1213,7 @@ export const conventionAndNoPower = [
 			title: '查询值域',
 			isHide: true,
 		},
-	},
+	},*/
 ];
 /**
  * 定义404、401界面

@@ -11,7 +11,6 @@ import {useRoutesList} from '/@/stores/routesList';
 import {NextLoading} from '/@/utils/loading';
 import UserSdk from '/@/api/sdk/UserSdk';
 import {dicApi} from '/@/api/dic/index';
-import Layout from '/@/layout'
 
 // 前端控制路由
 
@@ -103,7 +102,7 @@ export async function treeMenu(menuList: any, list: any) {
                 name: menu.path,
                 id: menu.id,
                 parentId: menu.parentId,
-                component: () => import('/@/layout/routerView/parent.vue'),
+                component: () => import(`/@/layout/routerView/parent.vue`),
                 // 跳转到首页
                 "redirect": "/home",
                 meta: {
@@ -114,19 +113,19 @@ export async function treeMenu(menuList: any, list: any) {
                     isAffix: false,
                     isIframe: false,
                     icon: menu.icon,
-
                 }
             }
             list.push(json)
         } else if(menu.menuType === '1') {
-            // debugger
+            const modules: any = import.meta.glob('../views/**/*.vue');
             let json = {
                 //说明是目录
                 path: `/${menu.path}`,
                 name: menu.path,
                 id: menu.id,
                 parentId: menu.parentId,
-                component: () => import('/@/views/' + menu.component + ".vue"),
+                // component: () => import(`/@/views/${menu.component}.vue`),
+                component:  modules[`../views/${menu.component}.vue`],
                 meta: {
                     title: menu.menuName,
                     //isLink: "",
@@ -135,7 +134,6 @@ export async function treeMenu(menuList: any, list: any) {
                     isAffix: false,
                     isIframe: false,
                     icon: menu.icon,
-
                 }
             }
             list.push(json)
